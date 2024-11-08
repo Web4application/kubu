@@ -1,0 +1,1 @@
+pip install numpy scikit-learn tensorflow transformers
