@@ -1,1 +1,4 @@
-pip install numpy scikit-learn tensorflow transformers
+numpy
+scikit-learn
+tensorflow
+transformers
