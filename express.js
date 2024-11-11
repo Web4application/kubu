@@ -27,7 +27,7 @@ return message.channel.send('Please provide some text to analyze.');
 }
 
 try {
-const response = await axios.post('http://localhost:3000/api/analyze', { text });
+const response = await axios.post('http://localhost:8080/api/analyze', { text });
 const result = response.data;
 message.channel.send(`Analysis result: ${result.analysis}`);
 } catch (error) {
@@ -60,5 +60,5 @@ res.status(500).json({ error: 'Failed to analyze text' });
 });
 
 app.listen(port, () => {
-console.log(`Web app listening at http://localhost:${port}`);
+console.log(`Web app listening at http://localhost:${8080}`);
 });
