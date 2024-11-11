@@ -1,8 +1,9 @@
 import sqlite3
 import pandas as pd
 import tensorflow as tf
-from tensorflow.keras.models import Sequential
+from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Dense
+import joblib
 
 # Database setup
 def setup_database():
@@ -39,23 +40,24 @@ def get_all_data():
     conn.close()
     return rows
 
-# Data processing
+# Load data
 def load_data(file_path):
     return pd.read_csv(file_path)
 
+# Preprocess data
 def preprocess_data(df):
     df = df.dropna()
     return df
 
+# Feature engineering
 def feature_engineering(df):
-    df['new_feature'] = df['existing_feature'] * 2
+    df['new_feature'] = df['existing_feature'] * 2  # Adjust 'existing_feature' to your actual column name
     return df
 
 # Train TensorFlow model
 def train_model(data):
-    data = data.drop(columns=['new_feature'])
-    x_train = data.iloc[:, :-1].values
-    y_train = data.iloc[:, -1].values
+    x_train = data.drop(columns=['new_feature']).values
+    y_train = data['new_feature'].values
 
     model = Sequential([
         Dense(128, activation='relu', input_shape=(x_train.shape[1],)),
@@ -64,15 +66,16 @@ def train_model(data):
     ])
     model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
     model.fit(x_train, y_train, epochs=5)
-    model.save('models/trained_model.h5')
+    model_save_path = 'models/trained_model.h5'
+    model.save(model_save_path)
 
-# Model evaluation
+# Evaluate TensorFlow model
 def evaluate_model(test_data):
-    test_data = test_data.drop(columns=['new_feature'])
-    x_test = test_data.iloc[:, :-1].values
-    y_test = test_data.iloc[:, -1].values
+    x_test = test_data.drop(columns=['new_feature']).values
+    y_test = test_data['new_feature'].values
 
-    model = tf.keras.models.load_model('models/trained_model.h5')
+    model_save_path = 'models/trained_model.h5'
+    model = load_model(model_save_path)
     loss, accuracy = model.evaluate(x_test, y_test)
     print(f'Test Accuracy: {accuracy}')
 
@@ -94,8 +97,9 @@ def main():
     data = get_all_data()
     print('Data from database:', data)
 
-    # Assuming 'data/dataset.csv' is the path to your data file
-    df = load_data('data/dataset.csv')
+    # Adjust the path to your dataset
+    data_file_path = 'data/dataset.csv'
+    df = load_data(data_file_path)
     df = preprocess_data(df)
     df = feature_engineering(df)
 
