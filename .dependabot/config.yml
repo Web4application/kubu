@@ -1,7 +1,0 @@
-version: 2
-update:
-  frequency: "daily"
-  allow:
-    - production
-  ignore:
-    - dependency-name: kubu-hai
