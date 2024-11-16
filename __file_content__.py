@@ -56,4 +56,3 @@ class FileContent(Base):
         from core.db.models import File
 
         await session.execute(delete(FileContent).where(~FileContent.id.in_(select(distinct(File.content_id)))))
-
