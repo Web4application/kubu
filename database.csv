@@ -1,3 +1,0 @@
-# Load data from the correct path
-data_file_path = 'data/dataset.csv'
-df = load_data(data_file_path)

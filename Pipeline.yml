@@ -1,0 +1,7 @@
+steps:
+  - label: "🔨 Test"
+    command: "make test"
+    plugins:
+      - test-collector#v1.0.0:
+          files: "test-data-*.json"
+          format: "json"
