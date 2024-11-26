@@ -33,7 +33,6 @@ go build -overlay overlay.json -o main_call_asm$GOEXE ./call_asm
 go list -compiled -overlay overlay.json -f '{{range .CompiledGoFiles}}{{. | printf "%s\n"}}{{end}}' ./cgo_hello_replace
 cp stdout compiled_cgo_sources.txt
 go run ../print_line_comments.go compiled_cgo_sources.txt
-
 # Cache test
 export OLD_GOCACHE=$GOCACHE
 export GOCACHE=$WORK/cache  # Use a fresh cache
