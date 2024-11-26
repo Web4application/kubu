@@ -1,4 +1,1 @@
-<key>NSSpeechRecognitionUsageDescription</key>
-<string>We need access to your speech to recognize commands.</string>
-<key>NSMicrophoneUsageDescription</key>
-<string>We need access to your microphone to recognize speech.</string>
+<?xml version="1.0" encoding="UTF-8"?><Error><Code>AccessDenied</Code><Message></Message><RequestId>tx0000023dc01ee72964285-00661e14eb-fc825-fra</RequestId><HostId>fc825-fra-default</HostId></Error>
