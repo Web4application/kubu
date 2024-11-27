@@ -1,5 +1,5 @@
 
-  APACHE INSTALLATION OVERVIEW
+APACHE INSTALLATION OVERVIEW
 
   Quick Start - Unix
   ------------------
