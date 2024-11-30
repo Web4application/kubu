@@ -7,7 +7,7 @@ tokenizer = Wav2Vec2Tokenizer.from_pretrained("facebook/wav2vec2-base-960h")
 model = Wav2Vec2ForCTC.from_pretrained("facebook/wav2vec2-base-960h")
 
 # Load audio file
-speech, rate = sf.read("kubu-hai/music/roda.wav")
+speech, rate = sf.read("roda.wav")
 
 # Tokenize and predict
 input_values = tokenizer(speech, return_tensors="pt").input_values
