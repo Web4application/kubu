@@ -8,10 +8,12 @@ import (
 "encoding/json"
 
 openai "github.com/openai/openai-go"
+"github.com/Web4application/kubu-hai/somepackage" // Importing a package from kubu-hai
 )
 
 func main() {
 http.HandleFunc("/generate", generateHandler)
+http.HandleFunc("/kubu", kubuHandler) // Adding a new handler for kubu-hai functionality
 log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
@@ -31,4 +33,9 @@ return
 }
 
 json.NewEncoder(w).Encode(resp.Choices[0].Text)
+}
+
+func kubuHandler(w http.ResponseWriter, r *http.Request) {
+result := somepackage.SomeFunction() // Calling a function from kubu-hai
+fmt.Fprintln(w, result)
 }
