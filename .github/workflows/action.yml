@@ -32,3 +32,5 @@ inputs:
 outputs:
   page_url:
     description: 'URL to deployed GitHub Pages'
+  name: 'Upload GitHub Pages artifact'
+  uses: 'actions/upload-pages-artifact@v3.0.1'          
