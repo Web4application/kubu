@@ -3,8 +3,8 @@ import torch
 import soundfile as sf
 
 # Load pre-trained model and tokenizer
-tokenizer = Wav2Vec2Tokenizer.from_pretrained("facebook/wav2vec2-base-960h")
-model = Wav2Vec2ForCTC.from_pretrained("facebook/wav2vec2-base-960h")
+tokenizer = Wav2Vec2Tokenizer.from_pretrained("enoch/llama-65b-hf")
+model = Wav2Vec2ForCTC.from_pretrained("enoch/llama-65b-hf")
 
 # Load audio file
 speech, rate = sf.read("roda.wav")
