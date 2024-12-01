@@ -16,20 +16,20 @@ let package = Package(
 import PackageDescription
 
 let package = Package(
-name: "kubu-hai",
+name: "kubu-hai-model.h5",
 dependencies: [
 .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),
 .package(url: "https://github.com/vapor/queues.git", from: "1.0.0")
 ],
 targets: [
-.target(name: "App", dependencies: [
+.target(name: "kubu-hai-model.h5", dependencies: [
 .product(name: "Vapor", package: "vapor"),
 .product(name: "Queues", package: "queues")
 ]),
 .target(name: "Run", dependencies: ["App"])
 ]
 )
-, package: "roda"),
+, package: "kubu-hai.model.h5"),
       ],
       path: "Sources"
     ),
