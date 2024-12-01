@@ -1,6 +1,6 @@
 name: 'Deploy GitHub Pages site'
 description: 'A GitHub Action to deploy an artifact as a GitHub Pages site'
-author: 'KUBU LEE'
+author: 'GITHUB'
 runs:
   using: 'node20'
   main: 'dist/index.js'
