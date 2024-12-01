@@ -63,7 +63,7 @@ jobs:
 
 | Output | Description |
 | ------ | ----------- |
-| `page_url` | The URL of the deployed Pages site |
+| `[page_url](https://web4application.github.io/kubu-hai.h5/)` | The URL of the deployed Pages site |
 
 ### Environment Variables 🌎
 
