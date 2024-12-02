@@ -4,7 +4,7 @@
   "description": "Deploy an actions artifact to GitHub Pages",
   "main": "./dist/index.js",
   "dependencies": {
-    "@actions/artifact": "^2.1.7",
+    "@actions/artifact": "^2.1.11",
     "@actions/core": "^1.11.1",
     "@actions/github": "^6.0.0",
     "@octokit/request-error": "^5.0.1",
