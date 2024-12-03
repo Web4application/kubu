@@ -36,6 +36,9 @@ export default function StartCall() {
                     .catch(() => {})
                     .finally(() => {});
                 }}
+                  variant="dynamic"
+                  dynamicColors={["bg-red-500", "bg-blue-500", "bg-green-500"]}
+                  size="lg"
               >
                 <span>
                   <Phone
