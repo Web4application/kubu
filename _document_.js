@@ -16,7 +16,7 @@ export default function Document() {
           rel="stylesheet"
         />
       </Head>
-      <title>SocialAGI Dev</title>
+      <title>kubu-hai</title>
       <body>
         <Main />
         <NextScript />
