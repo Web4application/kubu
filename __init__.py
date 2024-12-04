@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 return logger
 
 logger = setup_logging()
-logger.info("Kubu-Hai package initialized")
+logger.info("Kubu-hai package initialized")
 
 # Utility function
 def print_welcome_message():
@@ -26,7 +26,7 @@ print("Welcome to the Kubu-Hai AI package!")
 print_welcome_message()
 
 # Importing necessary modules from the package
-from .ai_kubu import some_function
+from .ai_kubu-hai import some_function
 from .ai_main import main_function
 from .ai_model import build_model
 
