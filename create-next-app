@@ -1,0 +1,1 @@
+npx create-next-app --example with-redux with-redux-app
