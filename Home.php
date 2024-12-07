@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>mod_h2 test site</title>
+        <title>kubu-hai_mod_h2 test site</title>
     </head>
     <body>
         <h1>mod_h2 test site</h1>
@@ -43,4 +43,3 @@
         </ul>
     </body>
 </html>
-
