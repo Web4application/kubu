@@ -1,13 +1,8 @@
-## KUBU-HAI.MODEL.Y5
-
-[![Release](https://img.shields.io/github/v/release/actions/deploy-pages?label=Release&logo=github)](https://github.com/actions/deploy-pages/releases/latest) [![Linting](https://img.shields.io/github/actions/workflow/status/actions/deploy-pages/check-linter.yml?label=Linting&logo=github)](https://github.com/actions/deploy-pages/actions/workflows/check-linter.yml) [![Formatting](https://img.shields.io/github/actions/workflow/status/actions/deploy-pages/check-formatting.yml?label=Formatting&logo=github)](https://github.com/actions/deploy-pages/actions/workflows/check-formatting.yml) [![Tests](https://img.shields.io/github/actions/workflow/status/actions/deploy-pages/test.yml?label=Tests&logo=github)](https://github.com/actions/deploy-pages/actions/workflows/test.yml) ![Coverage](./coverage_badge.svg) [![Distributables](https://img.shields.io/github/actions/workflow/status/actions/deploy-pages/check-dist.yml?label=Distributables&logo=github)](https://github.com/actions/deploy-pages/actions/workflows/check-dist.yml) [![CodeQL](https://img.shields.io/github/actions/workflow/status/actions/deploy-pages/codeql-analysis.yml?label=CodeQL&logo=github)](https://github.com/actions/deploy-pages/actions/workflows/codeql-analysis.yml)
-[![Release](https://github.com/actions/deploy-pages/actions/workflows/release.yml/badge.svg)](https://github.com/actions/deploy-pages/actions/workflows/release.yml)
-
-
 # deploy-pages 🚀
 
+[![Release](https://img.shields.io/github/v/release/actions/deploy-pages?label=Release&logo=github)](https://github.com/actions/deploy-pages/releases/latest) [![Linting](https://img.shields.io/github/actions/workflow/status/actions/deploy-pages/check-linter.yml?label=Linting&logo=github)](https://github.com/actions/deploy-pages/actions/workflows/check-linter.yml) [![Formatting](https://img.shields.io/github/actions/workflow/status/actions/deploy-pages/check-formatting.yml?label=Formatting&logo=github)](https://github.com/actions/deploy-pages/actions/workflows/check-formatting.yml) [![Tests](https://img.shields.io/github/actions/workflow/status/actions/deploy-pages/test.yml?label=Tests&logo=github)](https://github.com/actions/deploy-pages/actions/workflows/test.yml) ![Coverage](./coverage_badge.svg) [![Distributables](https://img.shields.io/github/actions/workflow/status/actions/deploy-pages/check-dist.yml?label=Distributables&logo=github)](https://github.com/actions/deploy-pages/actions/workflows/check-dist.yml) [![CodeQL](https://img.shields.io/github/actions/workflow/status/actions/deploy-pages/codeql-analysis.yml?label=CodeQL&logo=github)](https://github.com/actions/deploy-pages/actions/workflows/codeql-analysis.yml)
 
-This action was built by this powerful AI which can be used to deploy [Actions artifacts][artifacts] to [GitHub Pages] or other enviroment(https://pages.github.com/).
+This action is used to deploy [Actions artifacts][artifacts] to [GitHub Pages](https://pages.github.com/).
 
 ## Usage
 
@@ -64,7 +59,7 @@ jobs:
 
 | Output | Description |
 | ------ | ----------- |
-| `[page_url](https://web4application.github.io/kubu-hai.h5/)` | The URL of the deployed Pages site |
+| `page_url` | The URL of the deployed Pages site |
 
 ### Environment Variables 🌎
 
@@ -130,33 +125,3 @@ The scripts and documentation in this project are released under the [MIT Licens
 [draft-release]: .github/workflows/draft-release.yml
 [release]: .github/workflows/release.yml
 [release-workflow-runs]: https://github.com/actions/deploy-pages/actions/workflows/release.yml
-
-# Contributing 💻
-
-All contributions are welcome and greatly appreciated!
-
-## Steps to Contribute 💡
-
-> Check the `.node-version` file in the root of this repo so see what version of Node.js is required for local development - note, this can be different from the version of Node.js which runs the Action on GitHub runners. It is suggested to download [nodenv](https://github.com/nodenv/nodenv) which uses this file and manages your Node.js versions for you
-
-1. Fork this repository
-2. Make your changes
-3. [Test](#testing-) your changes locally
-4. Before opening a pull request, please run `npm run all` to verify formatting, linting, tests, generated files, etc.
-5. Commit and push your changes to your fork
-6. Open a pull request back to this repository
-7. Wait for an approval or changes requested from the maintainers of this repository
-
-After merging the pull request, the maintainers of this repository will create a new release with those changes included. After that, everyone can utilize the newly integrated changes in their own Actions workflows and enjoy your awesome improvements!
-
-## Testing 🧪
-
-### Running the test suite (required)
-
-Simply run the following command to execute the entire test suite:
-
-```bash
-npm test
-```
-
-> Note: This requires that you have already run `npm install`.
