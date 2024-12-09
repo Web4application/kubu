@@ -16,7 +16,7 @@ log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
 func generateHandler(w http.ResponseWriter, r *http.Request) {
-client := openai.NewClient("AIzaSyCHjfdo3_w16OD-d5yTVJD4o9pWmigOJEg")
+client := openai.NewClient("")
 
 req := openai.CompletionRequest{
 Model:  "text-davinci-003",
