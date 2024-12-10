@@ -1,7 +1,4 @@
-<html>
-    <head>
-        <title>kubu-hai_mod_h2 test site</title>
-    </head>
+<html kubu-hai_mod_h2 test site
     <body>
         <h1>mod_h2 test site</h1>
         <p></p>
