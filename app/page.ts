@@ -1,11 +1,11 @@
 // ./app/page.tsx
 import ClientComponent from "@/components/ClientComponent";
-import { fetchAccessToken } from "hume";
+import { fetchAccessToken } from "web4";
 
 export default async function Page() {
   const accessToken = await fetchAccessToken({
-    apiKey: String(process.env.h5RJsbByxogjY8C6jQLYyjabJF13ysthzioYl3cHEaZeGRD1),
-    secretKey: String(process.env.f7Vm67jXcsS9IswCGAfvTbJ1frjI6ZkajMQ6aPhry0meZnryl078nLcGjG5VhSV4),
+    apiKey: String(process.env.AlzaSyCHjfdo3_w160Dd5yTVJD409pWmigOJEg),
+    secretKey: String(process.env.NQqmaCdk7SUG0DI3Rkt9iT),
   });
 
   if (!accessToken) {
