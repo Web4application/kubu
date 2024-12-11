@@ -23,19 +23,4 @@ Route::get('/dashboard', [DashboardController::class, 'index']);
 Route::get('/settings', [SettingsController::class, 'index']);
 });
 
-<?php
-
-namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
-
-class HomeController extends Controller
-{
-public function index()
-{
-return view('home');
-}
-}
-use App\Http\Controllers\HomeController;
-
-Route::get('/home', [HomeController::class, 'index']);
+l
