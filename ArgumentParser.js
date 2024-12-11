@@ -1,7 +1,7 @@
 import PackageDescription
 
 let package = Package(
-  name: "roda",
+  name: "kubu-hai",
   platforms: [.macOS(.v13)],
   dependencies: [
     .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.2.0"),
@@ -16,20 +16,20 @@ let package = Package(
 import PackageDescription
 
 let package = Package(
-name: "kubu-hai-model.h5",
+name: "kubu-hai",
 dependencies: [
 .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),
 .package(url: "https://github.com/vapor/queues.git", from: "1.0.0")
 ],
 targets: [
-.target(name: "kubu-hai-model.h5", dependencies: [
+.target(name: "kubu-hai", dependencies: [
 .product(name: "Vapor", package: "vapor"),
 .product(name: "Queues", package: "queues")
 ]),
 .target(name: "Run", dependencies: ["App"])
 ]
 )
-, package: "kubu-hai.model.h5"),
+, package: "kubu-hai"),
       ],
       path: "Sources"
     ),
