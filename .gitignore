@@ -1,9 +1,26 @@
-# Byte-compiled / optimized / DLL files
+# Logs
+logs/
+*.log
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Python
 __pycache__/
 *.py[cod]
-*$py.class
+*.so
 
-# Virtual environment
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Environments
 .env
 .venv
 env/
@@ -12,79 +29,56 @@ ENV/
 env.bak/
 venv.bak/
 
-# Jupyter Notebook
-.ipynb_checkpoints
+# Build directories
+build/
+dist/
+*.egg-info/
 
-# Data files
-*.csv
-*.h5
-*.json
-*.db
+# Coverage reports
+coverage/
+*.cover
+*.coverage
+*.cov
+*.lcov
 
-# Logs
-*.log
+# Test results
+junit-xml/
+test-results/
 
-# TensorFlow checkpoints
-checkpoint
+# IDE and editor directories
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Secret keys
+*.key
+*.key.pub
+
+# Docker
+*.dockerignore
+Dockerfile
+docker-compose.yml
+
+# AWS
+*.pem
+*.key
+
+# TensorFlow SavedModel
+saved_model/
+
+# Model checkpoints
+checkpoints/
 *.ckpt
 
-# PyTorch checkpoints
-*.pt
-*.pth
-
-# Model files
-*.h5
-*.pb
-*.onnx
+# SageMaker
+.sagemaker/
 
 # Temporary files
-*.tmp
-*.temp
-*.bak
-*.swp
-
-# IDE specific files
-.vscode/
-.idea/
-*.sublime-project
-
-*.sublime-workspace
-
-# Node.js
-node_modules/
-npm-debug.log
-yarn-error.log
-
-# Next.js
-/.next/
-/out/
-
-# Build files
-/.build/
-/.cache/
-/.vercel/
-
-# Environment variables
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-# IDE files
-.vscode/
-.idea/
-*.iml
-
-# Logs
-logs/
-*.log
-
-# Dependency lock files
-yarn.lock
-package-lock.json
-
-.DS_Store
-
-# Environment files
-.env
-.env*.local
+tmp/
+temp/
