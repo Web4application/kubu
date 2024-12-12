@@ -3,11 +3,11 @@ name: CI/CD Pipeline
 on:
 push:
 branches:
-•  main
-
+  main
 pull_request:
+
 branches:
-•  main
+  main
 
 
 jobs:
@@ -15,23 +15,23 @@ build:
 runs-on: ubuntu-latest
 
 steps:
-•  name: Checkout code
+  name: Checkout code
 
 uses: actions/checkout@v2
 
-•  name: Set up Python
+  name: Set up Python
 
 uses: actions/setup-python@v2
 with:
 python-version: 3.8.0
 
-•  name: Install dependencies
+  name: Install dependencies
 
 run: |
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 
-•  name: Lint with flake8
+  name: Lint with flake8
 
 run: |
 pip install flake8
@@ -40,17 +40,17 @@ flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
 # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
 flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-•  name: Build Docker image
+  name: Build Docker image
 
 run: docker build -t my-flask-api .
 
-•  name: Run tests
+  name: Run tests
 
 run: |
 docker run -d -p 5000:5000 my-flask-api
 # Add your test commands here
 
-•  name: Push to Docker Hub
+  name: Push to Docker Hub
 
 run: |
 echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
