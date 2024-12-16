@@ -1,0 +1,1 @@
+export GOOGLE_GENAI_API_KEY=<AlzaSyCHjfdo3_w160Dd5yTVJD409pWmigOJEg>
