@@ -11,6 +11,9 @@ pids/
 # Dependency directories
 node_modules/
 jspm_packages/
+/.pnp
+.pnp.js
+.yarn/install-state.gz
 
 # Python
 __pycache__/
@@ -28,11 +31,13 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.env*.local
 
 # Build directories
 build/
 dist/
 *.egg-info/
+/out/
 
 # Coverage reports
 coverage/
@@ -59,6 +64,7 @@ Thumbs.db
 # Secret keys
 *.key
 *.key.pub
+*.pem
 
 # Docker
 *.dockerignore
@@ -82,3 +88,39 @@ checkpoints/
 # Temporary files
 tmp/
 temp/
+
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
+.env*.local
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
