@@ -1,1 +1,11 @@
-export GOOGLE_GENAI_API_KEY=<AlzaSyCHjfdo3_w160Dd5yTVJD409pWmigOJEg>
+// Example: env/config.js
+const config = {
+    development: {
+        apiUrl: 'http://localhost:3000/api',
+    },
+    production: {
+        apiUrl: 'https://mywebapp.com/api',
+    },
+};
+
+export default config;
