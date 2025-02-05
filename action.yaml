@@ -1,12 +1,12 @@
 name: Build and deploy Python app to Azure Web App
 
 env:
-  AZURE_WEBAPP_NAME: Qubuhub  
+  AZURE_WEBAPP_NAME: web4.app
   PYTHON_VERSION: '3.8'             
 
 on:
   push:
-    branches: [ "QUBUHUBsoftware" ]
+    branches: [ "main" ]
   workflow_dispatch:
 
 permissions:
