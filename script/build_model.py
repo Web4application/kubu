@@ -168,7 +168,7 @@ objective='val_accuracy',
 max_trials=5,
 executions_per_trial=3,
 directory='my_dir',
-project_name='kubu_hai_tuning'
+project_name='kubu_hai'
 )
 
 tuner.search(train_generator, epochs=10, validation_data=validation_generator)
