@@ -5,7 +5,7 @@ let package = Package(
   platforms: [.macOS(.v13)],
   dependencies: [
     .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.2.0"),
-    .package(name: "GoogleGenerativeAI", path: "../../"),
+    .package(name: "kubu-haiGenerativeAI", path: "../../"),
   ],
   targets: [
     .executableTarget(
