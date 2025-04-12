@@ -1,19 +1,26 @@
-use KubuHai::Authen::CRAM_MD5;
+package KubuHai::Authen::Digest_MD5;
 
-# Initialize CRAM-MD5 authentication
-my $auth = KubuHai::Authen::CRAM_MD5->new(
-    mechanism => 'CRAM-MD5',
-    callback  => {
-        user => 'testuser',
-        pass => 'password123',
-    },
-);
+use strict;
+use warnings;
+use base qw(KubuHai::Authen::Perl);  # Inherit from the base class
+use Digest::MD5 qw(md5_hex);
 
-# Start the authentication process
-my $start_response = $auth->client_start();
+# Method to start the client authentication
+sub client_start {
+    my ($self) = @_;
+    return '';  # No initial string, just an empty string to start the process
+}
 
-# Assume $challenge comes from the server
-my $challenge = "server-challenge-string";
-my $response = $auth->client_step($challenge);
+# Method for client step (response to challenge)
+sub client_step {
+    my ($self, $challenge) = @_;
+    my ($user, $pass) = map {
+        my $v = $self->{callback}->{$_};
+        defined($v) ? $v : ''
+    } qw(user pass);
 
-print "Authentication response: $response\n";
+    # Digest-MD5 step: MD5 hash of the concatenation of password and challenge
+    return $user . " " . md5_hex($pass . $challenge);
+}
+
+1;
