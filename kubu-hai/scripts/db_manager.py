@@ -1,21 +1,29 @@
 import psycopg2
 from dotenv import load_dotenv
 import os
-from contextlib import closing
+from datetime import datetime
 
-# Load environment variables from .env
+# Load environment variables
 load_dotenv()
 
-# Database credentials from environment variables
+# Database credentials
 USER = os.getenv("user")
 PASSWORD = os.getenv("password")
 HOST = os.getenv("host")
 PORT = os.getenv("port")
 DBNAME = os.getenv("dbname")
 
+# Log file path
+LOG_FILE = "logs/ai_behavior.log"
+
+def log_to_file(message):
+    """Append a message with timestamp to the log file."""
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    with open(LOG_FILE, "a") as f:
+        f.write(f"[{timestamp}] {message}\n")
+
 
 def get_db_connection():
-    """Establishes and returns a connection to the PostgreSQL database."""
     try:
         conn = psycopg2.connect(
             user=USER,
@@ -26,12 +34,11 @@ def get_db_connection():
         )
         return conn
     except Exception as e:
-        print(f"Database connection failed: {e}")
+        log_to_file(f"Database connection failed: {e}")
         return None
 
 
 def setup_database():
-    """Creates the ai_data table if it doesn't already exist."""
     conn = get_db_connection()
     if conn:
         try:
@@ -45,15 +52,14 @@ def setup_database():
                     );
                 ''')
                 conn.commit()
-                print("Table 'ai_data' created or already exists.")
+                log_to_file("Table 'ai_data' is ready.")
         except Exception as e:
-            print(f"Error during table creation: {e}")
+            log_to_file(f"Error creating table: {e}")
         finally:
             conn.close()
 
 
 def insert_data(input_data, output_data):
-    """Inserts a new record into the ai_data table."""
     conn = get_db_connection()
     if conn:
         try:
@@ -63,31 +69,8 @@ def insert_data(input_data, output_data):
                     VALUES (%s, %s);
                 ''', (input_data, output_data))
                 conn.commit()
-                print("Data inserted.")
+                log_to_file(f"Inserted into DB | Input: {input_data} | Output: {output_data}")
         except Exception as e:
-            print(f"Insert failed: {e}")
+            log_to_file(f"Insert failed: {e}")
         finally:
             conn.close()
-
-
-def get_all_data():
-    """Fetches all records from the ai_data table."""
-    conn = get_db_connection()
-    if conn:
-        try:
-            with conn.cursor() as cursor:
-                cursor.execute("SELECT * FROM ai_data;")
-                return cursor.fetchall()
-        except Exception as e:
-            print(f"Select failed: {e}")
-            return []
-        finally:
-            conn.close()
-
-
-# Example usage
-if __name__ == "__main__":
-    setup_database()
-    insert_data("Example input", "Example output")
-    data = get_all_data()
-    print("All data from DB:", data)
