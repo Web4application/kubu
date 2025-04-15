@@ -1,0 +1,9 @@
+{
+  "editor.formatOnSave": true,
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/.git": true
+  },
+  "python.linting.enabled": true,
+  "python.linting.pylintEnabled": true
+}
