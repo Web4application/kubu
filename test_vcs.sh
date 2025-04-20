@@ -13,8 +13,8 @@ exec git commit -m 'initial state'
 cd ..
 
 exec git init
-exec git config user.name 'Nameless Gopher'
-exec git config user.email 'nobody@golang.org'
+exec git config user.name 'kubu-hai'
+exec git config user.email 'kubulee.kl@golang.org'
 exec git submodule add ./sub
 exec git add go.mod example.go
 exec git commit -m 'initial state'
