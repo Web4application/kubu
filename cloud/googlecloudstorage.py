@@ -1,7 +1,7 @@
 from google.cloud import storage
 
 # Replace these with your actual bucket name and file paths
-bucket_name = 'your-bucket-name'
+bucket_name = 'web4-86e33.appspot.com'
 file_path = 'path/to/local/file.txt'
 destination_blob_name = 'uploaded-file.txt'  # Destination file in GCS
 source_blob_name = 'uploaded-file.txt'  # File to download from GCS
