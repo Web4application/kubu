@@ -5,3 +5,4 @@ pip install python-dotenv psycopg2
 pip install vocos[train]
 pip install -r requirements.txt
 docker build -t kubu-hai .
+npm init builder.io@latest
