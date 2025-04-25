@@ -6,3 +6,4 @@ pip install -r requirements.txt
 docker build -t kubu-hai .
 npm init builder.io@latest
 conda install -c conda-forge modal-client.
+pip install google-cloud-storage
