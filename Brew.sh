@@ -4,3 +4,4 @@ npm i --save genkit @genkit-ai/googleai
 pip install python-dotenv psycopg2
 pip install vocos[train]
 pip install -r requirements.txt
+docker build -t kubu-hai .
