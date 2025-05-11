@@ -1,0 +1,1162 @@
+<!doctype html>
+<html>
+  <head>
+    <title>home</title>
+    <style type="text/css">
+      body {
+      	font-family: Trebuchet MS, sans-serif;
+      	font-size: 15px;
+      	color: #444;
+      	margin-right: 24px;
+      }
+      
+      h1	{
+      	font-size: 25px;
+      }
+      h2	{
+      	font-size: 20px;
+      }
+      h3	{
+      	font-size: 16px;
+      	font-weight: bold;
+      }
+      hr	{
+      	height: 1px;
+      	border: 0;
+      	color: #ddd;
+      	background-color: #ddd;
+      }
+      
+      .app-desc {
+        clear: both;
+        margin-left: 20px;
+      }
+      .param-name {
+        width: 100%;
+      }
+      .license-info {
+        margin-left: 20px;
+      }
+      
+      .license-url {
+        margin-left: 20px;
+      }
+      
+      .model {
+        margin: 0 0 0px 20px;
+      }
+      
+      .method {
+        margin-left: 20px;
+      }
+      
+      .method-notes	{
+      	margin: 10px 0 20px 0;
+      	font-size: 90%;
+      	color: #555;
+      }
+      
+      pre {
+        padding: 10px;
+        margin-bottom: 2px;
+      }
+      
+      .http-method {
+       text-transform: uppercase;
+      }
+      
+      pre.get {
+        background-color: #0f6ab4;
+      }
+      
+      pre.post {
+        background-color: #10a54a;
+      }
+      
+      pre.put {
+        background-color: #c5862b;
+      }
+      
+      pre.delete {
+        background-color: #a41e22;
+      }
+      
+      .huge	{
+      	color: #fff;
+      }
+      
+      pre.example {
+        background-color: #f3f3f3;
+        padding: 10px;
+        border: 1px solid #ddd;
+      }
+      
+      code {
+        white-space: pre;
+      }
+      
+      .nickname {
+        font-weight: bold;
+      }
+      
+      .method-path {
+        font-size: 1.5em;
+        background-color: #0f6ab4;
+      }
+      
+      .up {
+        float:right;
+      }
+      
+      .parameter {
+        width: 500px;
+      }
+      
+      .param {
+        width: 500px;
+        padding: 10px 0 0 20px;
+        font-weight: bold;
+      }
+      
+      .param-desc {
+        width: 700px;
+        padding: 0 0 0 20px;
+        color: #777;
+      }
+      
+      .param-type {
+        font-style: italic;
+      }
+      
+      .param-enum-header {
+      width: 700px;
+      padding: 0 0 0 60px;
+      color: #777;
+      font-weight: bold;
+      }
+      
+      .param-enum {
+      width: 700px;
+      padding: 0 0 0 80px;
+      color: #777;
+      font-style: italic;
+      }
+      
+      .field-label {
+        padding: 0;
+        margin: 0;
+        clear: both;
+      }
+      
+      .field-items	{
+      	padding: 0 0 15px 0;
+      	margin-bottom: 15px;
+      }
+      
+      .return-type {
+        clear: both;
+        padding-bottom: 10px;
+      }
+      
+      .param-header {
+        font-weight: bold;
+      }
+      
+      .method-tags {
+        text-align: right;
+      }
+      
+      .method-tag {
+        background: none repeat scroll 0% 0% #24A600;
+        border-radius: 3px;
+        padding: 2px 10px;
+        margin: 2px;
+        color: #FFF;
+        display: inline-block;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+  <h1>home-iot-api</h1>
+    <div class="app-desc">The API for the EatBacon IOT project</div>
+    <div class="app-desc">More information: <a href="https://web4app.net">https://helloreverb.com</a></div>
+    <div class="app-desc">Contact Info: <a href="info@web4app.net info"> info@web4app.net </a></div>
+    <div class="app-desc">Version: 1.0.0</div>
+    <div class="app-desc">BasePath:/Dist/script/kubu-hai.py</div>
+    <div class="license-info">All rights reserved</div>
+    <div class="license-url">http://apache.org/licenses/LICENSE-2.0.html</div>
+  <h2>Access</h2>
+
+  <h2><a name="__Methods">Methods</a></h2>
+  [ Jump to <a href="#__Models">Models</a> ]
+
+  <h3>Table of Contents </h3>
+  <div class="method-summary"></div>
+  <h4><a href="#Device">Device</a></h4>
+  <ul>
+  <li><a href="#getDevices"><code><span class="http-method">get</span> /devices</code></a></li>
+  <li><a href="#register"><code><span class="http-method">post</span> /devices</code></a></li>
+  </ul>
+  <h4><a href="#Environment">Environment</a></h4>
+  <ul>
+  <li><a href="#getForecast"><code><span class="http-method">get</span> /temperature/forecast/{days}</code></a></li>
+  <li><a href="#getHeaterState"><code><span class="http-method">get</span> /temperature/{zoneId}/heater</code></a></li>
+  <li><a href="#getZoneTemperature"><code><span class="http-method">get</span> /temperature/{zoneId}</code></a></li>
+  <li><a href="#setHeaterState"><code><span class="http-method">post</span> /temperature/{zoneId}/heater/{state}</code></a></li>
+  <li><a href="#temperatureSummary"><code><span class="http-method">get</span> /temperature</code></a></li>
+  </ul>
+  <h4><a href="#ZWave">ZWave</a></h4>
+  <ul>
+  <li><a href="#getLightingSummary"><code><span class="http-method">get</span> /lightingSummary</code></a></li>
+  <li><a href="#getSwitchState"><code><span class="http-method">get</span> /lighting/switches/{deviceId}</code></a></li>
+  <li><a href="#setDimmer"><code><span class="http-method">post</span> /lighting/dimmers/{deviceId}/{value}</code></a></li>
+  <li><a href="#setDimmerTimer"><code><span class="http-method">post</span> /lighting/dimmers/{deviceId}/{value}/timer/{timeunit}</code></a></li>
+  <li><a href="#setSwitch"><code><span class="http-method">post</span> /lighting/switches/{deviceId}/{value}</code></a></li>
+  <li><a href="#setSwitchTimer"><code><span class="http-method">post</span> /lighting/switches/{deviceId}/{value}/timer/{minutes}</code></a></li>
+  </ul>
+  <h4><a href="#Zones">Zones</a></h4>
+  <ul>
+  <li><a href="#getZones"><code><span class="http-method">get</span> /zones</code></a></li>
+  <li><a href="#quietZone"><code><span class="http-method">get</span> /zones/{zoneId}/quiet</code></a></li>
+  </ul>
+
+  <h1><a name="Device">Device</a></h1>
+  <div class="method"><a name="getDevices"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /devices</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">getDevices</span>)</div>
+    <div class="method-notes">returns all registered devices</div>
+
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">skip (optional)</div>
+      
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; number of records to skip format: int32</div>      <div class="param">limit (optional)</div>
+      
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; max number of records to return format: int32</div>    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      array[String]
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ "http://10.0.0.225:8080", "http://10.0.0.225:8080" ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    All the devices
+        
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="register"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /devices</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">register</span>)</div>
+    <div class="method-notes"></div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">body <a href="#DeviceRegistrationInfo">DeviceRegistrationInfo</a> (optional)</div>
+      
+            <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+                </div>  <!-- field-items -->
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    successfully registered device
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="Environment">Environment</a></h1>
+  <div class="method"><a name="getForecast"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /temperature/forecast/{days}</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">getForecast</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">days (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  format: int32</div>    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#ForecastResponse">ForecastResponse</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "city" : {
+    "country" : "country",
+    "name" : "name",
+    "lon" : 1.4658129805029452,
+    "id" : 0,
+    "lat" : 6.027456183070403
+  },
+  "values" : [ {
+    "date" : "2000-01-23T04:56:07.000+00:00",
+    "temperature" : {
+      "high" : 3.616076749251911,
+      "low" : 9.301444243932576,
+      "night" : 1.2315135367772556,
+      "evening" : 7.386281948385884,
+      "day" : 4.145608029883936,
+      "morning" : 2.027123023002322
+    },
+    "weather" : {
+      "summary" : "summary",
+      "icon" : "icon",
+      "description" : "description"
+    },
+    "humidity" : 5,
+    "pressure" : 5.962133916683182,
+    "clouds" : 7,
+    "windSpeed" : 2.3021358869347655
+  }, {
+    "date" : "2000-01-23T04:56:07.000+00:00",
+    "temperature" : {
+      "high" : 3.616076749251911,
+      "low" : 9.301444243932576,
+      "night" : 1.2315135367772556,
+      "evening" : 7.386281948385884,
+      "day" : 4.145608029883936,
+      "morning" : 2.027123023002322
+    },
+    "weather" : {
+      "summary" : "summary",
+      "icon" : "icon",
+      "description" : "description"
+    },
+    "humidity" : 5,
+    "pressure" : 5.962133916683182,
+    "clouds" : 7,
+    "windSpeed" : 2.3021358869347655
+  } ]
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    the forecast
+        <a href="#ForecastResponse">ForecastResponse</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getHeaterState"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /temperature/{zoneId}/heater</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">getHeaterState</span>)</div>
+    <div class="method-notes">gets the state of the heater</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">zoneId (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  </div>    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#HeaterState">HeaterState</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "id" : "id",
+  "state" : "state"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    heater state
+        <a href="#HeaterState">HeaterState</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getZoneTemperature"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /temperature/{zoneId}</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">getZoneTemperature</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">zoneId (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  </div>    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#TemperatueZoneStatus">TemperatueZoneStatus</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "name" : "name",
+  "id" : "id",
+  "units" : "fahrenheit",
+  "value" : 5.962133916683182,
+  "timestamp" : "2000-01-23T04:56:07.000+00:00"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Zone temperature
+        <a href="#TemperatueZoneStatus">TemperatueZoneStatus</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="setHeaterState"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /temperature/{zoneId}/heater/{state}</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">setHeaterState</span>)</div>
+    <div class="method-notes">turns the heater on or off</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">zoneId (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  </div>      <div class="param">state (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  </div>    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#ApiResponse">ApiResponse</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "code" : 0,
+  "message" : "everything is ok"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Status of the operation
+        <a href="#ApiResponse">ApiResponse</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="temperatureSummary"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /temperature</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">temperatureSummary</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#TemperatureSummary">TemperatureSummary</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "zoneStatus" : [ {
+    "name" : "name",
+    "id" : "id",
+    "units" : "fahrenheit",
+    "value" : 5.962133916683182,
+    "timestamp" : "2000-01-23T04:56:07.000+00:00"
+  }, {
+    "name" : "name",
+    "id" : "id",
+    "units" : "fahrenheit",
+    "value" : 5.962133916683182,
+    "timestamp" : "2000-01-23T04:56:07.000+00:00"
+  } ],
+  "zones" : [ {
+    "inputPosition" : 6,
+    "outputPosition" : 1,
+    "zone" : "zone",
+    "name" : "name",
+    "id" : 0
+  }, {
+    "inputPosition" : 6,
+    "outputPosition" : 1,
+    "zone" : "zone",
+    "name" : "name",
+    "id" : 0
+  } ]
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    ok
+        <a href="#TemperatureSummary">TemperatureSummary</a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="ZWave">ZWave</a></h1>
+  <div class="method"><a name="getLightingSummary"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /lightingSummary</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">getLightingSummary</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#LightingSummary">LightingSummary</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "zoneStatus" : [ {
+    "level" : 6,
+    "lastUpdate" : "2000-01-23T04:56:07.000+00:00",
+    "name" : "name",
+    "id" : "id"
+  }, {
+    "level" : 6,
+    "lastUpdate" : "2000-01-23T04:56:07.000+00:00",
+    "name" : "name",
+    "id" : "id"
+  } ],
+  "zones" : [ {
+    "deviceType" : "dimmer",
+    "zone" : "zone",
+    "name" : "name",
+    "id" : "id",
+    "deviceId" : 0
+  }, {
+    "deviceType" : "dimmer",
+    "zone" : "zone",
+    "name" : "name",
+    "id" : "id",
+    "deviceId" : 0
+  } ]
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    ok
+        <a href="#LightingSummary">LightingSummary</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="getSwitchState"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /lighting/switches/{deviceId}</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">getSwitchState</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">deviceId (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  </div>    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#DeviceState">DeviceState</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "level" : 0,
+  "lastUpdate" : "2000-01-23T04:56:07.000+00:00",
+  "name" : "name",
+  "id" : "id"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    response
+        <a href="#DeviceState">DeviceState</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="setDimmer"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /lighting/dimmers/{deviceId}/{value}</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">setDimmer</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">deviceId (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  </div>      <div class="param">value (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  format: int32</div>    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#ApiResponse">ApiResponse</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "code" : 0,
+  "message" : "everything is ok"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    response
+        <a href="#ApiResponse">ApiResponse</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="setDimmerTimer"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /lighting/dimmers/{deviceId}/{value}/timer/{timeunit}</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">setDimmerTimer</span>)</div>
+    <div class="method-notes">sets a dimmer to a specific value on a timer</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">deviceId (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  </div>      <div class="param">value (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  format: int32</div>      <div class="param">timeunit (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  format: int32</div>    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">units (optional)</div>
+      
+            <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash;  default: milliseconds </div>    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#ApiResponse">ApiResponse</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "code" : 0,
+  "message" : "everything is ok"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    response
+        <a href="#ApiResponse">ApiResponse</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="setSwitch"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /lighting/switches/{deviceId}/{value}</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">setSwitch</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">deviceId (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  </div>      <div class="param">value (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  </div>    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#ApiResponse">ApiResponse</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "code" : 0,
+  "message" : "everything is ok"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    response
+        <a href="#ApiResponse">ApiResponse</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="setSwitchTimer"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /lighting/switches/{deviceId}/{value}/timer/{minutes}</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">setSwitchTimer</span>)</div>
+    <div class="method-notes">sets a switch to a specific value on a timer</div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">deviceId (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  </div>      <div class="param">value (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  </div>      <div class="param">minutes (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  format: int32</div>    </div>  <!-- field-items -->
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#ApiResponse">ApiResponse</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "code" : 0,
+  "message" : "everything is ok"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    response
+        <a href="#ApiResponse">ApiResponse</a>
+  </div> <!-- method -->
+  <hr/>
+  <h1><a name="Zones">Zones</a></h1>
+  <div class="method"><a name="getZones"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /zones</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">getZones</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      
+      array[String]
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>[ "", "" ]</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    ok
+        
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="quietZone"></a>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /zones/{zoneId}/quiet</code></pre></div>
+    <div class="method-summary"> (<span class="nickname">quietZone</span>)</div>
+    <div class="method-notes"></div>
+
+    <h3 class="field-label">Path parameters</h3>
+    <div class="field-items">
+      <div class="param">zoneId (required)</div>
+      
+            <div class="param-desc"><span class="param-type">Path Parameter</span> &mdash;  </div>    </div>  <!-- field-items -->
+
+
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    ok
+        <a href="#"></a>
+  </div> <!-- method -->
+  <hr/>
+
+  <h2><a name="__Models">Models</a></h2>
+  [ Jump to <a href="#__Methods">Methods</a> ]
+
+  <h3>Table of Contents</h3>
+  <ol>
+    <li><a href="#ApiResponse"><code>ApiResponse</code></a></li>
+    <li><a href="#City"><code>City</code></a></li>
+    <li><a href="#DeviceRegistrationInfo"><code>DeviceRegistrationInfo</code></a></li>
+    <li><a href="#DeviceState"><code>DeviceState</code></a></li>
+    <li><a href="#Forecast"><code>Forecast</code></a></li>
+    <li><a href="#ForecastResponse"><code>ForecastResponse</code></a></li>
+    <li><a href="#ForecastTemperature"><code>ForecastTemperature</code></a></li>
+    <li><a href="#HeaterState"><code>HeaterState</code></a></li>
+    <li><a href="#LightingSummary"><code>LightingSummary</code></a></li>
+    <li><a href="#LightingZone"><code>LightingZone</code></a></li>
+    <li><a href="#LightingZoneStatus"><code>LightingZoneStatus</code></a></li>
+    <li><a href="#TemperatueZoneStatus"><code>TemperatueZoneStatus</code></a></li>
+    <li><a href="#TemperatureSummary"><code>TemperatureSummary</code></a></li>
+    <li><a href="#TemperatureZone"><code>TemperatureZone</code></a></li>
+    <li><a href="#WeatherForecast"><code>WeatherForecast</code></a></li>
+  </ol>
+
+  <div class="model">
+    <h3><a name="ApiResponse"><code>ApiResponse</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">code (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">message (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+          <div class="param-desc"><span class="param-type">example: everything is ok</span></div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="City"><code>City</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">id (optional)</div><div class="param-desc"><span class="param-type"><a href="#long">Long</a></span>  format: int64</div>
+<div class="param">name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">lat (optional)</div><div class="param-desc"><span class="param-type"><a href="#double">Double</a></span>  format: double</div>
+<div class="param">lon (optional)</div><div class="param-desc"><span class="param-type"><a href="#double">Double</a></span>  format: double</div>
+<div class="param">country (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="DeviceRegistrationInfo"><code>DeviceRegistrationInfo</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">uri (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  format: uri</div>
+          <div class="param-desc"><span class="param-type">example: http://10.0.0.220:8080</span></div>
+<div class="param">id (optional)</div><div class="param-desc"><span class="param-type"><a href="#UUID">UUID</a></span>  format: uuid</div>
+          <div class="param-desc"><span class="param-type">example: 0729a580-2240-11e6-9eb5-0002a5d5c51b</span></div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="DeviceState"><code>DeviceState</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">id (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">lastUpdate (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
+<div class="param">level (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="Forecast"><code>Forecast</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">date (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
+<div class="param">pressure (optional)</div><div class="param-desc"><span class="param-type"><a href="#double">Double</a></span>  format: double</div>
+<div class="param">humidity (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">windSpeed (optional)</div><div class="param-desc"><span class="param-type"><a href="#double">Double</a></span>  format: double</div>
+<div class="param">clouds (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">temperature (optional)</div><div class="param-desc"><span class="param-type"><a href="#ForecastTemperature">ForecastTemperature</a></span>  </div>
+<div class="param">weather (optional)</div><div class="param-desc"><span class="param-type"><a href="#WeatherForecast">WeatherForecast</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="ForecastResponse"><code>ForecastResponse</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">city (optional)</div><div class="param-desc"><span class="param-type"><a href="#City">City</a></span>  </div>
+<div class="param">values (optional)</div><div class="param-desc"><span class="param-type"><a href="#Forecast">array[Forecast]</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="ForecastTemperature"><code>ForecastTemperature</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">low (optional)</div><div class="param-desc"><span class="param-type"><a href="#double">Double</a></span>  format: double</div>
+<div class="param">high (optional)</div><div class="param-desc"><span class="param-type"><a href="#double">Double</a></span>  format: double</div>
+<div class="param">morning (optional)</div><div class="param-desc"><span class="param-type"><a href="#double">Double</a></span>  format: double</div>
+<div class="param">day (optional)</div><div class="param-desc"><span class="param-type"><a href="#double">Double</a></span>  format: double</div>
+<div class="param">evening (optional)</div><div class="param-desc"><span class="param-type"><a href="#double">Double</a></span>  format: double</div>
+<div class="param">night (optional)</div><div class="param-desc"><span class="param-type"><a href="#double">Double</a></span>  format: double</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="HeaterState"><code>HeaterState</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">id (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">state (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="LightingSummary"><code>LightingSummary</code></a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'>ok</div>
+    <div class="field-items">
+      <div class="param">zones (optional)</div><div class="param-desc"><span class="param-type"><a href="#LightingZone">array[LightingZone]</a></span>  </div>
+<div class="param">zoneStatus (optional)</div><div class="param-desc"><span class="param-type"><a href="#LightingZoneStatus">array[LightingZoneStatus]</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="LightingZone"><code>LightingZone</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">id (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">deviceId (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">deviceType (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">dimmer</div><div class="param-enum">switch</div>
+<div class="param">zone (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="LightingZoneStatus"><code>LightingZoneStatus</code></a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'>the status of the lighting zone.</div>
+    <div class="field-items">
+      <div class="param">id (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">lastUpdate (optional)</div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
+<div class="param">level (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="TemperatueZoneStatus"><code>TemperatueZoneStatus</code></a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'>status of a single zone</div>
+    <div class="field-items">
+      <div class="param">id </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> the unique identifier for the zone </div>
+<div class="param">name (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> the name of the zone </div>
+<div class="param">value </div><div class="param-desc"><span class="param-type"><a href="#double">Double</a></span> the temperature in the zone format: double</div>
+<div class="param">units (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span> the temperature units </div>
+        <div class="param-enum-header">Enum:</div>
+        <div class="param-enum">celsius</div><div class="param-enum">fahrenheit</div>
+<div class="param">timestamp </div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span> the timestamp when the temperature was measured format: date-time</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="TemperatureSummary"><code>TemperatureSummary</code></a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'>ok</div>
+    <div class="field-items">
+      <div class="param">zones (optional)</div><div class="param-desc"><span class="param-type"><a href="#TemperatureZone">array[TemperatureZone]</a></span>  </div>
+<div class="param">zoneStatus (optional)</div><div class="param-desc"><span class="param-type"><a href="#TemperatueZoneStatus">array[TemperatueZoneStatus]</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="TemperatureZone"><code>TemperatureZone</code></a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'>a single temperature zone</div>
+    <div class="field-items">
+      <div class="param">id </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> the unique identifier for the zone format: int32</div>
+<div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">inputPosition (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">outputPosition (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  format: int32</div>
+<div class="param">zone (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="WeatherForecast"><code>WeatherForecast</code></a> <a class="up" href="#__Models">Up</a></h3>
+    
+    <div class="field-items">
+      <div class="param">summary (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">description (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">icon (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  </body>
+</html>
