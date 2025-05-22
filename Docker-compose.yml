@@ -1,32 +1,52 @@
-version: '3.9'
+version: '3.8'
 
 services:
-  backend:
-    build: ./backend
-    ports:
-      - "5000:5000"
-    volumes:
-      - ./backend:/app
-    networks:
-      - kubu-net
+  app:
+    build: ./app
+    container_name: fastapi_app
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - db
+    expose:
+      - 8000
 
-  frontend:
-    build: ./frontend
-    ports:
-      - "8080:80"
-    networks:
-      - kubu-net
+  db:
+    image: postgres:15
+    container_name: postgres_db
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
   nginx:
-    build: ./nginx
+    image: nginx:latest
+    container_name: nginx_proxy
+    restart: always
     ports:
       - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - ./nginx/html:/var/www/certbot
     depends_on:
-      - backend
-      - frontend
-    networks:
-      - kubu-net
+      - app
 
-networks:
-  kubu-net:
-    driver: bridge
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - ./nginx/html:/var/www/certbot
+    entrypoint: >
+      sh -c "trap exit TERM; while :; do sleep 12h & wait $${!}; certbot renew; done"
+
+volumes:
+  certbot-etc:
+  certbot-var:
+  postgres_data:
