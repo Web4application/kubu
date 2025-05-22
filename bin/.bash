@@ -12,4 +12,4 @@ docker-compose run --rm certbot certonly \
   --email kubulee.kl@gmail.com --agree-tos --no-eff-email \
   -d api.kubu-hai.com
 alembic init alembic
-
+alembic revision --autogenerate -m "Your migration message"
