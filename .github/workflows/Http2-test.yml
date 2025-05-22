@@ -1,0 +1,21 @@
+name: HTTP/2 Tests
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  test-http2:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y nghttp2-client curl
+
+      - name: Run HTTP/2 header and load tests
+        run: ./test_http2.sh
