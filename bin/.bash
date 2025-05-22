@@ -13,3 +13,4 @@ docker-compose run --rm certbot certonly \
   -d api.kubu-hai.com
 alembic init alembic
 alembic revision --autogenerate -m "Your migration message"
+pip install fastapi[all] sqlalchemy alembic
