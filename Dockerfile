@@ -1,18 +1,12 @@
-# -------- Stage 1: AOT Compile Dart App --------
-FROM dart:stable as build
-
+# Stage 1: Build Dart AOT binary
+FROM dart:stable AS build
 WORKDIR /app
-
-# Copy project files
 COPY pubspec.* ./
 RUN dart pub get
-
 COPY . .
-
-# AOT compile server.dart to a native executable
 RUN dart compile exe bin/server.dart -o bin/server
 
-# -------- Stage 2: Minimal Runtime --------
+# Stage 2: Minimal runtime
 FROM debian:bookworm-slim
 
 # Install runtime dependencies for AOT binary
