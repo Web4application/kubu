@@ -2,47 +2,56 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kubu-Hai Project</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>kubu-hai mod_h2 Test Site</title>
+    <style>
+        body { font-family: sans-serif; padding: 2em; }
+        h1, h2 { color: #2c3e50; }
+        ul { list-style: none; padding-left: 0; }
+        li { margin: 0.3em 0; }
+        a { text-decoration: none; color: #2980b9; }
+        a:hover { text-decoration: underline; }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Welcome to My Awesome Project</h1>
-    </header>
-    <nav>
-        <ul>
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
-            <li><a href="#services">Services</a></li>
-        </ul>
-    </nav>
-    <main>
-        <section id="home">
-            <h2>Home</h2>
-            <p>This is the home section of the Kubu-Hai project.</p>
-        </section>
-        <section id="about">
-            <h2>About</h2>
-            <p>Information about the Kubu-Hai project goes here.</p>
-        </section>
-        <section id="contact">
-            <h2>Contact</h2>
-            <p>Contact details for the Kubu-Hai project.</p>
-        </section>
-        <section id="services">
-            <h2>Services</h2>
-            <p>Details about the services offered.</p>
-        </section>
-        <section id="gallery">
-            <h2>Gallery</h2>
-            <img src="path/to/your/image.jpg" alt="Description of image">
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2025 Kubu-Hai Project. All rights reserved.</p>
-    </footer>
-    <script src="script.js"></script>
+    <h1>kubu-hai: mod_h2 / mod_proxy / mod_rewrite Test Site</h1>
+    
+    <h2>Served Directly</h2>
+    <ul>
+        <li><a href="001.html">01: HTML</a></li>
+        <li><a href="002.jpg">02: Image</a></li>
+        <li><a href="003.html">03: HTML + Image</a></li>
+        <li><a href="004.html">04: Tiled Image</a></li>
+        <li><a href="005.txt">05: Large Text</a></li>
+        <li><a href="006.html">06: HTML / JS / CSS</a></li>
+        <li><a href="007.html">07: Form Submit</a></li>
+        <li><a href="upload.py">08: Upload</a></li>
+        <li><a href="009.py">09: Small Chunks</a></li>
+    </ul>
+
+    <h2>Via mod_proxy</h2>
+    <ul>
+        <li><a href="proxy/001.html">01: HTML</a></li>
+        <li><a href="proxy/002.jpg">02: Image</a></li>
+        <li><a href="proxy/003.html">03: HTML + Image</a></li>
+        <li><a href="proxy/004.html">04: Tiled Image</a></li>
+        <li><a href="proxy/005.txt">05: Large Text</a></li>
+        <li><a href="proxy/006.html">06: HTML / JS / CSS</a></li>
+        <li><a href="proxy/007.html">07: Form Submit</a></li>
+        <li><a href="proxy/upload.py">08: Upload</a></li>
+        <li><a href="proxy/009.py">09: Small Chunks</a></li>
+    </ul>
+
+    <h2>Via mod_rewrite</h2>
+    <ul>
+        <li><a href="rewrite/001.html">01: HTML</a></li>
+        <li><a href="rewrite/002.jpg">02: Image</a></li>
+        <li><a href="rewrite/003.html">03: HTML + Image</a></li>
+        <li><a href="rewrite/004.html">04: Tiled Image</a></li>
+        <li><a href="rewrite/005.txt">05: Large Text</a></li>
+        <li><a href="rewrite/006.html">06: HTML / JS / CSS</a></li>
+        <li><a href="rewrite/007.html">07: Form Submit</a></li>
+        <li><a href="rewrite/upload.py">08: Upload</a></li>
+        <li><a href="rewrite/009.py">09: Small Chunks</a></li>
+    </ul>
 </body>
 </html>
