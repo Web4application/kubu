@@ -11,3 +11,5 @@ docker-compose run --rm certbot certonly \
   --webroot --webroot-path=/var/www/certbot \
   --email kubulee.kl@gmail.com --agree-tos --no-eff-email \
   -d api.kubu-hai.com
+alembic init alembic
+
