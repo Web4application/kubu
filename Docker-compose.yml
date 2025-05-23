@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  app:
+    build: ./app
+    container_name: fastapi_app
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - db
+    expose:
+      - 8000
+
+  db:
+    image: postgres:15
+    container_name: postgres_db
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx_proxy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - ./nginx/html:/var/www/certbot
+    depends_on:
+      - app
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - ./nginx/html:/var/www/certbot
+    entrypoint: >
+      sh -c "trap exit TERM; while :; do sleep 12h & wait $${!}; certbot renew; done"
+
+volumes:
+  certbot-etc:
+  certbot-var:
+  postgres_data:
