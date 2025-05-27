@@ -4,6 +4,26 @@ import asyncio
 from fastapi.middleware.cors import CORSMiddleware
 from collections import deque
 import statistics
+from fastapi import Depends
+from auth import authenticate_user, create_access_token, get_current_user
+from fastapi.security import OAuth2PasswordRequestForm
+from datetime import timedelta
+
+@app.post("/token")
+async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    user = authenticate_user(fake_users_db, form_data.username, form_data.password)
+    if not user:
+        raise HTTPException(status_code=400, detail="Incorrect username or password")
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user["username"], "roles": user["roles"]}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+
+@app.websocket("/ws/metrics")
+async def metrics_ws(websocket: WebSocket, current_user=Depends(get_current_user)):
+    await websocket.accept()
+    # rest of your ws code here
 
 app = FastAPI()
 
