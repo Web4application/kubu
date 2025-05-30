@@ -1,77 +1,64 @@
-from fastapi import FastAPI, WebSocket
-import psutil
-import asyncio
+from fastapi import FastAPI, Request
+from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
-from collections import deque
-import statistics
-from fastapi import Depends
-from auth import authenticate_user, create_access_token, get_current_user
-from fastapi.security import OAuth2PasswordRequestForm
-from datetime import timedelta
-
-@app.post("/token")
-async def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = authenticate_user(fake_users_db, form_data.username, form_data.password)
-    if not user:
-        raise HTTPException(status_code=400, detail="Incorrect username or password")
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user["username"], "roles": user["roles"]}, expires_delta=access_token_expires
-    )
-    return {"access_token": access_token, "token_type": "bearer"}
-
-@app.websocket("/ws/metrics")
-async def metrics_ws(websocket: WebSocket, current_user=Depends(get_current_user)):
-    await websocket.accept()
-    # rest of your ws code here
+import uvicorn
+import asyncio
 
 app = FastAPI()
 
+# Enable CORS for local development or adjust for production domains
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["*"],  # Change to your frontend domain in prod
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-MAX_HISTORY = 50  # number of points to keep for stats
+class ActivityRequest(BaseModel):
+    activity: str
+    repo_url: str
 
-cpu_history = deque(maxlen=MAX_HISTORY)
-mem_history = deque(maxlen=MAX_HISTORY)
+class ChatRequest(BaseModel):
+    message: str
 
-def is_anomaly(value, history, threshold=2.5):
-    if len(history) < 10:
-        return False  # Not enough data to judge
-    mean = statistics.mean(history)
-    stdev = statistics.stdev(history)
-    if stdev == 0:
-        return False
-    z_score = abs((value - mean) / stdev)
-    return z_score > threshold
+@app.post("/activity")
+async def handle_activity(request: ActivityRequest):
+    # Basic validation & dummy response for demonstration
+    activity = request.activity.lower()
+    repo_url = request.repo_url
 
-@app.websocket("/ws/metrics")
-async def metrics_ws(websocket: WebSocket):
-    await websocket.accept()
-    try:
-        while True:
-            cpu = psutil.cpu_percent()
-            mem = psutil.virtual_memory().percent
+    # Insert real repo processing logic here — e.g., clone, analyze, summarize, etc.
+    # For now, respond with a poetic nod to the future:
 
-            # Append current readings
-            cpu_history.append(cpu)
-            mem_history.append(mem)
+    if activity == 'analyze':
+        result = f"Analyzing repository at {repo_url}... The AI dives deep, unearthing secrets encoded in bytes."
+    elif activity == 'summary':
+        result = f"Generating a summary for {repo_url}... Wisdom distilled from digital ink flows."
+    elif activity == 'upgrade':
+        result = f"Upgrading project {repo_url}... Breathing new life into legacy code, future-proof and strong."
+    elif activity == 'readme':
+        result = f"Creating README for {repo_url}... Your project's story, told clearly and proudly."
+    elif activity == 'dependencies':
+        result = f"Installing dependencies for {repo_url}... Ensuring every cog fits perfectly in the machine."
+    else:
+        result = f"Unknown activity: {activity}. Choose wisely, seeker."
 
-            cpu_anomaly = is_anomaly(cpu, list(cpu_history))
-            mem_anomaly = is_anomaly(mem, list(mem_history))
+    # Simulate async processing
+    await asyncio.sleep(1)
+    return {"result": result}
 
-            payload = {
-                "cpu": cpu,
-                "memory": mem,
-                "cpu_anomaly": cpu_anomaly,
-                "mem_anomaly": mem_anomaly,
-            }
-            await websocket.send_json(payload)
-            await asyncio.sleep(1)
-    except Exception:
-        await websocket.close()
+@app.post("/chat")
+async def chat_endpoint(request: ChatRequest):
+    user_msg = request.message.strip()
+    # In real app, here connect to your LLM backend (OpenAI, local LLM, etc)
+    # For now, mock a simple echo response with some AI flair:
+
+    reply = f"You asked: '{user_msg}'. The future is bright and full of promise — let's build it together!"
+
+    # Simulate async delay for LLM response
+    await asyncio.sleep(0.5)
+    return {"reply": reply}
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
