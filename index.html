@@ -172,7 +172,13 @@
       transition: all 0.3s ease;
     }
 
-    .activity-buttons button:hover {
+    .activity-buttons button.active {
+      background-color: var(--primary);
+      color: var(--button-text);
+      border-color: var(--primary-hover);
+    }
+
+    .activity-buttons button:hover:not(.active) {
       background-color: var(--primary);
       color: var(--button-text);
     }
@@ -201,6 +207,7 @@
       overflow-y: auto;
       margin-bottom: 1rem;
       color: var(--text-dark);
+      font-size: 0.9rem;
     }
 
     .message {
@@ -209,9 +216,10 @@
       padding: 0.5rem 1rem;
       border-radius: 15px;
       line-height: 1.3;
-      font-size: 0.9rem;
       word-wrap: break-word;
       box-shadow: 0 0 5px #00000050;
+      user-select: text;
+      white-space: pre-wrap;
     }
 
     .message.user {
@@ -270,17 +278,16 @@
     .voice-btn:hover {
       background-color: var(--primary-hover);
     }
-
   </style>
 </head>
 <body>
 
-  <div class="dashboard">
+  <div class="dashboard" role="main">
 
     <div class="toggle-container">
       <label for="darkModeToggle">Dark Mode</label>
       <label class="toggle-switch">
-        <input type="checkbox" id="darkModeToggle" checked />
+        <input type="checkbox" id="darkModeToggle" checked aria-checked="true" />
         <span class="slider"></span>
       </label>
     </div>
@@ -288,205 +295,242 @@
     <h1>Kubu-Hai AI Project Analyzer & Chat</h1>
 
     <div class="activity-buttons" role="group" aria-label="Project Activities">
-      <button data-activity="analyze">Analyze Repo</button>
-      <button data-activity="summary">Generate Summary</button>
-      <button data-activity="upgrade">Upgrade Project</button>
-      <button data-activity="readme">Create README</button>
-      <button data-activity="dependencies">Install Dependencies</button>
+      <button data-activity="analyze" type="button">Analyze Repo</button>
+      <button data-activity="summary" type="button">Generate Summary</button>
+      <button data-activity="upgrade" type="button">Upgrade Project</button>
+      <button data-activity="readme" type="button">Create README</button>
+      <button data-activity="install" type="button">Install Dependencies</button>
     </div>
 
-    <form id="repoForm" autocomplete="off" aria-label="GitHub repository form">
+    <form id="repoForm" aria-label="Repository URL form">
       <input
         type="text"
         id="repoUrl"
-        placeholder="Enter GitHub repository URL (e.g. https://github.com/user/repo.git)"
-        required
+        name="repoUrl"
+        placeholder="Enter GitHub repository URL (e.g. https://github.com/user/repo)"
         aria-required="true"
+        aria-describedby="repoUrlHelp"
       />
-      <button type="submit" aria-label="Submit repository URL">Submit</button>
+      <button type="submit" aria-label="Run activity on repository">Run</button>
     </form>
+    <small id="repoUrlHelp" style="color: #aaa;">Tip: Paste a valid public GitHub repo URL</small>
 
-    <pre id="result" aria-live="polite" aria-atomic="true" role="region"></pre>
+    <pre id="result" aria-live="polite" aria-atomic="true" tabindex="0"></pre>
 
-    <div class="chat-container" aria-live="polite" aria-atomic="false" role="region" aria-label="Chat with AI assistant">
-      <div class="messages" id="messages"></div>
-      <form id="chatForm" autocomplete="off" aria-label="Chat input form">
+    <section aria-label="AI assistant chat interface" class="chat-container" role="region">
+      <div class="messages" id="messages" aria-live="polite" aria-atomic="false" role="log" tabindex="0">
+        <div class="message bot" role="alert">Hello, I’m your AI assistant. Ask me anything about your project or just chat!</div>
+      </div>
+      <form id="chatForm" class="chat-input-container" aria-label="Chat input form">
         <input
           type="text"
           id="chatInput"
-          class="chat-input"
-          placeholder="Ask me anything..."
-          aria-label="Type your message"
+          name="chatInput"
+          autocomplete="off"
+          placeholder="Type your message here..."
+          aria-label="Message input"
           required
+          spellcheck="true"
         />
-        <button type="button" id="voiceBtn" class="voice-btn" title="Toggle Voice Input" aria-pressed="false" aria-label="Start voice input">
-          🎤
-        </button>
-        <button type="submit" aria-label="Send chat message">Send</button>
+        <button type="submit" aria-label="Send message">➡️</button>
+        <button type="button" id="voiceBtn" class="voice-btn" aria-label="Toggle voice input" title="Toggle voice input 🎙️">🎙️</button>
       </form>
-    </div>
-
+    </section>
   </div>
 
   <script>
-    // Dark Mode Toggle
-    const darkModeToggle = document.getElementById('darkModeToggle');
-    darkModeToggle.addEventListener('change', () => {
-      if (darkModeToggle.checked) {
-        document.body.classList.add('light');
+    (() => {
+      const darkModeToggle = document.getElementById('darkModeToggle');
+      const body = document.body;
+      const activityButtons = document.querySelectorAll('.activity-buttons button');
+      const repoForm = document.getElementById('repoForm');
+      const repoUrlInput = document.getElementById('repoUrl');
+      const resultPre = document.getElementById('result');
+
+      // Chat Elements
+      const chatForm = document.getElementById('chatForm');
+      const chatInput = document.getElementById('chatInput');
+      const messagesDiv = document.getElementById('messages');
+      const voiceBtn = document.getElementById('voiceBtn');
+
+      // State
+      let currentActivity = null;
+      let recognition = null;
+      let listening = false;
+
+      // Initialize dark mode from localStorage or default checked
+      if (localStorage.getItem('darkMode') === 'false') {
+        body.classList.remove('light');
+        darkModeToggle.checked = false;
       } else {
-        document.body.classList.remove('light');
+        body.classList.add('light');
+        darkModeToggle.checked = true;
       }
-    });
-    // Initialize with light mode on
-    document.body.classList.add('light');
 
-    // Activity Buttons + Repo Form
-    const activityButtons = document.querySelectorAll('.activity-buttons button');
-    const repoForm = document.getElementById('repoForm');
-    const repoUrlInput = document.getElementById('repoUrl');
-    const resultPre = document.getElementById('result');
-
-    let selectedActivity = null;
-
-    activityButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        selectedActivity = button.dataset.activity;
-        // Highlight active button visually
-        activityButtons.forEach(btn => btn.style.borderColor = btn === button ? 'var(--primary-hover)' : 'var(--primary)');
+      darkModeToggle.addEventListener('change', () => {
+        if (darkModeToggle.checked) {
+          body.classList.add('light');
+          localStorage.setItem('darkMode', 'true');
+          darkModeToggle.setAttribute('aria-checked', 'true');
+        } else {
+          body.classList.remove('light');
+          localStorage.setItem('darkMode', 'false');
+          darkModeToggle.setAttribute('aria-checked', 'false');
+        }
       });
-    });
 
-    repoForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (!selectedActivity) {
-        alert('Please select an activity before submitting.');
-        return;
+      // Activity buttons selection
+      activityButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          // Toggle active state
+          activityButtons.forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+          currentActivity = button.dataset.activity;
+          repoUrlInput.focus();
+        });
+      });
+
+      // Default to first activity active
+      if (activityButtons.length) {
+        activityButtons[0].classList.add('active');
+        currentActivity = activityButtons[0].dataset.activity;
       }
-      const repoUrl = repoUrlInput.value.trim();
-      if (!repoUrl) {
-        alert('Please enter a GitHub repository URL.');
-        return;
+
+      // Show message helper
+      function appendMessage(text, sender = 'bot') {
+        const div = document.createElement('div');
+        div.classList.add('message', sender);
+        div.textContent = text;
+        messagesDiv.appendChild(div);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        messagesDiv.focus();
       }
 
-      resultPre.textContent = 'Processing...';
-
-      try {
+      // Fetch helper with error handling
+      async function postActivity(activity, repoUrl) {
+        if (!repoUrl) {
+          throw new Error('Repository URL is required.');
+        }
+        const payload = { repoUrl, activity };
         const response = await fetch('/activity', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ activity: selectedActivity, repo_url: repoUrl }),
+          body: JSON.stringify(payload),
         });
         if (!response.ok) {
-          throw new Error(`Server responded with status ${response.status}`);
+          const text = await response.text();
+          throw new Error(`API error: ${response.status} ${response.statusText}\n${text}`);
         }
-        const data = await response.json();
-        resultPre.textContent = data.result || 'No result returned.';
-      } catch (err) {
-        resultPre.textContent = `Error: ${err.message}`;
+        return response.json();
       }
-    });
 
-    // Chat Section
-    const messagesDiv = document.getElementById('messages');
-    const chatForm = document.getElementById('chatForm');
-    const chatInput = document.getElementById('chatInput');
-    const voiceBtn = document.getElementById('voiceBtn');
-
-    // Append message to chat window
-    function appendMessage(text, sender = 'bot') {
-      const msg = document.createElement('div');
-      msg.classList.add('message', sender);
-      msg.textContent = text;
-      messagesDiv.appendChild(msg);
-      messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    }
-
-    // Speak text using Web Speech API
-    function speakText(text) {
-      if (!window.speechSynthesis) return;
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-US';
-      window.speechSynthesis.speak(utterance);
-    }
-
-    // Send chat message to backend
-    async function sendChatMessage(message) {
-      appendMessage(message, 'user');
-      chatInput.value = '';
-      try {
-        const res = await fetch('/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message }),
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-        if (data.reply) {
-          appendMessage(data.reply, 'bot');
-          speakText(data.reply);
+      // Run the selected activity on form submit
+      repoForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!currentActivity) {
+          alert('Please select an activity.');
+          return;
         }
-      } catch (err) {
-        appendMessage(`Error: ${err.message}`, 'bot');
-      }
-    }
-
-    chatForm.addEventListener('submit', e => {
-      e.preventDefault();
-      const msg = chatInput.value.trim();
-      if (msg) sendChatMessage(msg);
-    });
-
-    // Voice Input (Speech-to-Text)
-    let recognition;
-    let recognizing = false;
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      recognition = new SpeechRecognition();
-      recognition.lang = 'en-US';
-      recognition.interimResults = false;
-      recognition.maxAlternatives = 1;
-
-      recognition.onstart = () => {
-        recognizing = true;
-        voiceBtn.setAttribute('aria-pressed', 'true');
-        voiceBtn.title = "Click to stop voice input";
-        voiceBtn.textContent = "🛑";
-      };
-
-      recognition.onend = () => {
-        recognizing = false;
-        voiceBtn.setAttribute('aria-pressed', 'false');
-        voiceBtn.title = "Start voice input";
-        voiceBtn.textContent = "🎤";
-      };
-
-      recognition.onerror = (event) => {
-        console.error("Speech recognition error", event.error);
-        recognizing = false;
-        voiceBtn.setAttribute('aria-pressed', 'false');
-        voiceBtn.title = "Start voice input";
-        voiceBtn.textContent = "🎤";
-      };
-
-      recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        chatInput.value = transcript;
-        chatInput.focus();
-      };
-
-      voiceBtn.addEventListener('click', () => {
-        if (recognizing) {
-          recognition.stop();
-          recognizing = false;
-        } else {
-          recognition.start();
+        const repoUrl = repoUrlInput.value.trim();
+        if (!repoUrl) {
+          alert('Please enter a GitHub repository URL.');
+          return;
+        }
+        resultPre.textContent = '⏳ Working... Please wait.';
+        try {
+          const data = await postActivity(currentActivity, repoUrl);
+          // Expecting data.result to contain the output
+          if (typeof data.result === 'string') {
+            resultPre.textContent = data.result;
+          } else {
+            resultPre.textContent = JSON.stringify(data, null, 2);
+          }
+        } catch (err) {
+          resultPre.textContent = `❌ Error: ${err.message}`;
         }
       });
-    } else {
-      voiceBtn.style.display = 'none'; // hide if not supported
-    }
 
+      // Chat functionality
+      chatForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const text = chatInput.value.trim();
+        if (!text) return;
+        appendMessage(text, 'user');
+        chatInput.value = '';
+        resultPre.textContent = '🤖 AI is thinking...';
+
+        try {
+          const response = await fetch('/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: text }),
+          });
+          if (!response.ok) {
+            throw new Error(`Chat API error: ${response.status} ${response.statusText}`);
+          }
+          const data = await response.json();
+          const reply = data.reply || 'Sorry, no response.';
+          appendMessage(reply, 'bot');
+          resultPre.textContent = '';
+        } catch (err) {
+          appendMessage(`Error: ${err.message}`, 'bot');
+          resultPre.textContent = '';
+        }
+      });
+
+      // Voice input with Web Speech API
+      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        recognition.onresult = (event) => {
+          const speechResult = event.results[0][0].transcript;
+          chatInput.value = speechResult;
+          chatInput.focus();
+          listening = false;
+          voiceBtn.textContent = '🎙️';
+          voiceBtn.setAttribute('aria-pressed', 'false');
+        };
+
+        recognition.onerror = (event) => {
+          listening = false;
+          voiceBtn.textContent = '🎙️';
+          voiceBtn.setAttribute('aria-pressed', 'false');
+          console.error('Speech recognition error', event.error);
+          appendMessage(`Speech recognition error: ${event.error}`, 'bot');
+        };
+
+        recognition.onend = () => {
+          listening = false;
+          voiceBtn.textContent = '🎙️';
+          voiceBtn.setAttribute('aria-pressed', 'false');
+        };
+
+        voiceBtn.addEventListener('click', () => {
+          if (listening) {
+            recognition.stop();
+            listening = false;
+            voiceBtn.textContent = '🎙️';
+            voiceBtn.setAttribute('aria-pressed', 'false');
+          } else {
+            recognition.start();
+            listening = true;
+            voiceBtn.textContent = '🛑';
+            voiceBtn.setAttribute('aria-pressed', 'true');
+          }
+        });
+      } else {
+        // If speech recognition is not supported
+        voiceBtn.disabled = true;
+        voiceBtn.title = 'Voice input not supported in this browser';
+      }
+
+    })();
   </script>
+
 </body>
 </html>
