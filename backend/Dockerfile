@@ -9,6 +9,17 @@ RUN dart compile exe bin/server.dart -o bin/server
 # Stage 2: Minimal runtime
 FROM debian:bookworm-slim
 
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY ./backend/requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY ./backend /app
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
 # Install runtime dependencies for AOT binary
 RUN set -eux; \
     apt-get update; \
