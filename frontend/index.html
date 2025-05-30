@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kubu-Hai Dashboard</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header>
+    <h1>Kubu-Hai AI Project Assistant</h1>
+    <button id="toggleDarkMode">Toggle Dark Mode</button>
+  </header>
+
+  <nav>
+    <button id="btnCloneRepo">Clone Repo</button>
+    <button id="btnAnalyze">Analyze Project</button>
+    <button id="btnChat">Chat</button>
+    <button id="btnVoiceChat">Voice Chat</button>
+  </nav>
+
+  <main>
+    <section id="cloneSection" class="hidden">
+      <input id="repoUrl" type="text" placeholder="GitHub Repo URL" />
+      <button id="startClone">Start Clone & Analyze</button>
+      <p id="cloneStatus"></p>
+    </section>
+
+    <section id="chatSection" class="hidden">
+      <textarea id="chatLog" rows="10" readonly></textarea>
+      <input id="chatInput" type="text" placeholder="Type your message..." />
+      <button id="sendChat">Send</button>
+    </section>
+
+    <section id="voiceSection" class="hidden">
+      <button id="startVoiceChat">Start Voice Chat</button>
+      <p id="voiceStatus"></p>
+    </section>
+  </main>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
