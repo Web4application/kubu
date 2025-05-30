@@ -11,3 +11,7 @@ aiofiles
 whisper
 gtts
 python-multipart
+uvicorn
+python-dotenv
+celery[redis]
+gitpython
