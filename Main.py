@@ -1,64 +1,114 @@
-from fastapi import FastAPI, Request
-from pydantic import BaseModel
-from fastapi.middleware.cors import CORSMiddleware
-import uvicorn
+import os
+import uuid
 import asyncio
+import shutil
+import subprocess
+from fastapi import FastAPI, WebSocket, BackgroundTasks, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
 app = FastAPI()
 
-# Enable CORS for local development or adjust for production domains
+# CORS — tighten this for production
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Change to your frontend domain in prod
+    allow_origins=["*"], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-class ActivityRequest(BaseModel):
-    activity: str
-    repo_url: str
+BASE_DIR = "/tmp/kubu_projects"
+os.makedirs(BASE_DIR, exist_ok=True)
 
-class ChatRequest(BaseModel):
-    message: str
+# --- Models ---
+class RepoUrl(BaseModel):
+    git_url: str
 
-@app.post("/activity")
-async def handle_activity(request: ActivityRequest):
-    # Basic validation & dummy response for demonstration
-    activity = request.activity.lower()
-    repo_url = request.repo_url
+# --- Helper: Async shell command streaming ---
+async def run_cmd_stream(cmd: str, websocket: WebSocket):
+    process = await asyncio.create_subprocess_shell(
+        cmd,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
+    )
+    while True:
+        line = await process.stdout.readline()
+        if not line:
+            break
+        await websocket.send_text(line.decode().strip())
+    await process.wait()
+    if process.returncode != 0:
+        error = (await process.stderr.read()).decode()
+        await websocket.send_text(f"ERROR: {error}")
+        raise Exception(f"Command failed: {error}")
 
-    # Insert real repo processing logic here — e.g., clone, analyze, summarize, etc.
-    # For now, respond with a poetic nod to the future:
+# --- Clone + Analyze: WebSocket Streaming ---
+@app.websocket("/ws/clone")
+async def websocket_clone(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        data = await websocket.receive_json()
+        git_url = data.get("git_url")
+        if not git_url:
+            await websocket.send_text("ERROR: 'git_url' required")
+            return
 
-    if activity == 'analyze':
-        result = f"Analyzing repository at {repo_url}... The AI dives deep, unearthing secrets encoded in bytes."
-    elif activity == 'summary':
-        result = f"Generating a summary for {repo_url}... Wisdom distilled from digital ink flows."
-    elif activity == 'upgrade':
-        result = f"Upgrading project {repo_url}... Breathing new life into legacy code, future-proof and strong."
-    elif activity == 'readme':
-        result = f"Creating README for {repo_url}... Your project's story, told clearly and proudly."
-    elif activity == 'dependencies':
-        result = f"Installing dependencies for {repo_url}... Ensuring every cog fits perfectly in the machine."
-    else:
-        result = f"Unknown activity: {activity}. Choose wisely, seeker."
+        project_id = str(uuid.uuid4())
+        project_path = os.path.join(BASE_DIR, project_id)
+        os.makedirs(project_path, exist_ok=True)
 
-    # Simulate async processing
-    await asyncio.sleep(1)
-    return {"result": result}
+        await websocket.send_text(f"Cloning repo {git_url} into {project_path}...\n")
+        await run_cmd_stream(f"git clone {git_url} {project_path}", websocket)
 
-@app.post("/chat")
-async def chat_endpoint(request: ChatRequest):
-    user_msg = request.message.strip()
-    # In real app, here connect to your LLM backend (OpenAI, local LLM, etc)
-    # For now, mock a simple echo response with some AI flair:
+        await websocket.send_text("Starting AI analysis...\n")
+        for i in range(5):  # Simulate streaming progress
+            await asyncio.sleep(1)
+            await websocket.send_text(f"Analyzing... step {i+1}/5")
 
-    reply = f"You asked: '{user_msg}'. The future is bright and full of promise — let's build it together!"
+        await websocket.send_text("✅ Analysis complete!")
+    except Exception as e:
+        await websocket.send_text(f"❌ Exception: {str(e)}")
+    finally:
+        await websocket.close()
 
-    # Simulate async delay for LLM response
-    await asyncio.sleep(0.5)
-    return {"reply": reply}
+# --- Basic Chat Echo WebSocket ---
+@app.websocket("/ws/chat")
+async def websocket_chat(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        while True:
+            message = await websocket.receive_text()
+            response = f"Echo: {message}"
+            await websocket.send_text(response)
+    except Exception:
+        await websocket.close()
 
-if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+# --- Synchronous Git Clone ---
+def clone_repo(git_url: str, destination: str):
+    result = subprocess.run(["git", "clone", git_url, destination],
+                            capture_output=True, text=True)
+    if result.returncode != 0:
+        raise Exception(result.stderr)
+
+# --- Background AI Task ---
+async def analyze_and_upgrade_project(project_path: str):
+    await asyncio.sleep(5)
+    with open(os.path.join(project_path, "analysis.log"), "w") as f:
+        f.write("AI Analysis complete.\n")
+
+# --- Clone + Analyze Background Task Endpoint ---
+@app.post("/clone-and-analyze")
+async def clone_and_analyze_repo(repo: RepoUrl, background_tasks: BackgroundTasks):
+    git_url = repo.git_url
+    project_id = str(uuid.uuid4())
+    project_path = os.path.join(BASE_DIR, project_id)
+
+    try:
+        os.makedirs(project_path, exist_ok=True)
+        clone_repo(git_url, project_path)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+    background_tasks.add_task(analyze_and_upgrade_project, project_path)
+    return {"message": "✅ Cloned and analysis started", "project_id": project_id}
