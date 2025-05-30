@@ -33,3 +33,11 @@ services:
     depends_on:
       - backend
       - frontend
+
+  backend:
+    volumes:
+      - ./backend:/app
+      - kubu_projects:/tmp/kubu_projects
+
+volumes:
+  kubu_projects:
