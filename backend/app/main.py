@@ -33,20 +33,18 @@ async def run_cmd_async(cmd: str):
         raise Exception(f"Command failed: {stderr.decode().strip()}")
     return stdout.decode().strip()
 
-@app.post("/clone-analyze")
-async def clone_and_analyze(repo: RepoURL):
-    project_id = str(uuid.uuid4())
+from services.ai import analyze_project_code
+
+@app.post("/analyze-project/{project_id}")
+async def analyze_project(project_id: str):
     project_path = BASE_DIR / project_id
+    if not project_path.exists():
+        raise HTTPException(status_code=404, detail="Project not found")
     try:
-        project_path.mkdir(parents=True, exist_ok=False)
-        logging.info(f"Cloning repo {repo.url} into {project_path}")
-        await run_cmd_async(f"git clone {repo.url} {project_path}")
-        # TODO: integrate AI analysis here
-        summary = f"Project cloned at {project_path}. (AI analysis placeholder)"
-        return {"summary": summary, "project_id": project_id}
+        analysis = await analyze_project_code(project_path)
+        return {"analysis": analysis}
     except Exception as e:
-        logging.error(f"Error cloning repo: {e}")
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"AI analysis failed: {str(e)}")
 
 @app.post("/upgrade-project/{project_id}")
 async def upgrade_project(project_id: str):
