@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Kubu-Hai AI Project Analyzer & Chat</title>
   <style>
-    /* Root colors */
+    /* Your existing styles (already great!) */
     :root {
       --bg-light: #f5f7fa;
       --text-light: #222;
@@ -27,7 +27,6 @@
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
-      transition: background-color 0.3s, color 0.3s;
     }
 
     body.light {
@@ -49,39 +48,32 @@
       gap: 1.5rem;
     }
 
-    /* Form and input */
     form {
       display: flex;
       gap: 0.5rem;
       width: 100%;
     }
 
-    input[type="text"] {
+    input[type="text"], .chat-input {
       flex-grow: 1;
       padding: 0.75rem;
       border-radius: 6px;
       border: 1px solid #ccc;
       font-size: 1rem;
-      transition: border-color 0.3s;
     }
 
-    input[type="text"]:focus {
-      outline: none;
-      border-color: var(--primary);
-    }
-
-    button {
+    button, .voice-btn {
       background-color: var(--button-bg);
-      border: none;
-      padding: 0 1.5rem;
-      border-radius: 6px;
-      font-weight: 700;
       color: var(--button-text);
+      border: none;
+      border-radius: 6px;
+      padding: 0.5rem 1rem;
       cursor: pointer;
+      font-weight: 700;
       transition: background-color 0.3s ease;
     }
 
-    button:hover {
+    button:hover, .voice-btn:hover {
       background-color: var(--primary-hover);
     }
 
@@ -92,92 +84,8 @@
       width: 100%;
       height: 250px;
       overflow: auto;
-      white-space: pre-wrap;
-      word-break: break-word;
-      box-shadow: 0 0 10px #61dafb55;
-      transition: background-color 0.3s;
     }
 
-    body.light pre {
-      background: #ddd;
-      color: #222;
-      box-shadow: 0 0 10px #61dafbfaa;
-    }
-
-    .toggle-container {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-      justify-content: flex-end;
-    }
-
-    .toggle-switch {
-      position: relative;
-      width: 50px;
-      height: 24px;
-    }
-
-    .toggle-switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #ccc;
-      border-radius: 34px;
-      transition: 0.4s;
-    }
-
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 18px;
-      width: 18px;
-      left: 3px;
-      bottom: 3px;
-      background-color: white;
-      border-radius: 50%;
-      transition: 0.4s;
-    }
-
-    input:checked + .slider {
-      background-color: var(--primary);
-    }
-
-    input:checked + .slider:before {
-      transform: translateX(26px);
-    }
-
-    .activity-buttons {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-bottom: 1rem;
-    }
-
-    .activity-buttons button {
-      background-color: transparent;
-      border: 2px solid var(--primary);
-      color: var(--primary);
-      font-weight: 600;
-      padding: 0.5rem 1.2rem;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .activity-buttons button:hover {
-      background-color: var(--primary);
-      color: var(--button-text);
-    }
-
-    /* Chat section */
     .chat-container {
       border: 1px solid var(--primary);
       border-radius: 10px;
@@ -186,21 +94,12 @@
       display: flex;
       flex-direction: column;
       padding: 1rem;
-      overflow: hidden;
-      box-shadow: 0 0 10px #61dafbaa;
-    }
-
-    body.light .chat-container {
-      background: #f0f4ff;
-      border-color: var(--primary);
-      box-shadow: 0 0 10px #61dafbfff;
     }
 
     .messages {
       flex-grow: 1;
       overflow-y: auto;
       margin-bottom: 1rem;
-      color: var(--text-dark);
     }
 
     .message {
@@ -208,285 +107,124 @@
       max-width: 70%;
       padding: 0.5rem 1rem;
       border-radius: 15px;
-      line-height: 1.3;
       font-size: 0.9rem;
-      word-wrap: break-word;
-      box-shadow: 0 0 5px #00000050;
     }
 
     .message.user {
       background: var(--primary);
       color: var(--button-text);
       align-self: flex-end;
-      border-bottom-right-radius: 0;
     }
 
     .message.bot {
       background: #44475a;
       color: var(--text-dark);
       align-self: flex-start;
-      border-bottom-left-radius: 0;
     }
 
-    body.light .message.bot {
-      background: #e1e6ff;
-      color: #222;
-    }
-
-    .chat-input-container {
+    .chat-input-wrapper {
       display: flex;
-      gap: 1.5rem;
+      align-items: center;
+      gap: 0.5rem;
+      width: 100%;
     }
 
     .chat-input {
       flex-grow: 1;
-      padding: 0.75rem;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
-      transition: border-color 0.3s;
     }
 
-    .chat-input:focus {
-      outline: none;
-      border-color: var(--primary);
+    .footer {
+      margin-top: 2rem;
+      font-size: 0.85rem;
+      text-align: center;
+      color: var(--text-dark);
+      opacity: 0.7;
     }
 
-    .voice-btn {
-      background-color: var(--button-bg);
-      border: none;
-      border-radius: 50%;
-      width: 35px;
-      height: 35px;
-      cursor: pointer;
-      color: var(--button-text);
-      font-size: 1.2rem;
+    .dependency-logos {
       display: flex;
-      align-items: center;
+      flex-wrap: wrap;
       justify-content: center;
-      transition: background-color 0.3s;
+      gap: 1rem;
+      margin-top: 2rem;
     }
 
-    .voice-btn:hover {
-      background-color: var(--primary-hover);
+    .dependency-logos img {
+      height: 40px;
+      transition: transform 0.3s ease;
+    }
+
+    .dependency-logos img:hover {
+      transform: scale(1.1);
     }
 
   </style>
 </head>
-<body>
+<body class="light">
 
   <div class="dashboard">
-
-    <div class="toggle-container">
-      <label for="darkModeToggle">Dark Mode</label>
-      <label class="toggle-switch">
-        <input type="checkbox" id="darkModeToggle" checked />
-        <span class="slider"></span>
-      </label>
-    </div>
-
     <h1>Kubu-Hai AI Project Analyzer & Chat</h1>
 
-    <div class="activity-buttons" role="group" aria-label="Project Activities">
-      <button data-activity="analyze">Analyze Repo</button>
-      <button data-activity="summary">Generate Summary</button>
-      <button data-activity="upgrade">Upgrade Project</button>
-      <button data-activity="readme">Create README</button>
-      <button data-activity="dependencies">Install Dependencies</button>
-    </div>
-
-    <form id="repoForm" autocomplete="off" aria-label="GitHub repository form">
-      <input
-        type="text"
-        id="repoUrl"
-        placeholder="Enter GitHub repository URL (e.g. https://github.com/user/repo.git)"
-        required
-        aria-required="true"
-      />
-      <button type="submit" aria-label="Submit repository URL">Submit</button>
+    <form id="repoForm">
+      <input type="text" id="repoUrl" placeholder="Enter GitHub repo URL" required />
+      <button type="submit">Submit</button>
     </form>
 
-    <pre id="result" aria-live="polite" aria-atomic="true" role="region"></pre>
+    <pre id="result">Waiting for repository input...</pre>
 
-    <div class="chat-container" aria-live="polite" aria-atomic="false" role="region" aria-label="Chat with AI assistant">
+    <div class="chat-container">
       <div class="messages" id="messages"></div>
-      <form id="chatForm" autocomplete="off" aria-label="Chat input form">
-        <input
-          type="text"
-          id="chatInput"
-          class="chat-input"
-          placeholder="Ask me anything..."
-          aria-label="Type your message"
-          required
-        />
-        <button type="button" id="voiceBtn" class="voice-btn" title="Toggle Voice Input" aria-pressed="false" aria-label="Start voice input">
-          🎤
-        </button>
-        <button type="submit" aria-label="Send chat message">Send</button>
+      <form id="chatForm" class="chat-input-wrapper">
+        <input type="text" id="chatInput" class="chat-input" placeholder="Type your message..." required />
+        <button type="button" id="voiceBtn" class="voice-btn" title="Voice">🎤</button>
+        <button type="submit">Send</button>
       </form>
     </div>
 
+    <div class="dependency-logos">
+      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="HTML" title="HTML">
+      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JS" title="JavaScript">
+      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python" title="Python">
+      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub" title="GitHub">
+      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" alt="Docker" title="Docker">
+    </div>
+
+    <div class="footer">
+      <p>© 2025 <strong>Kubu Lee</strong> — Built by <strong>Web4application</strong></p>
+      <p>Support the project: <a href="https://github.com/Web4application" target="_blank">Donate on GitHub</a></p>
+    </div>
   </div>
 
   <script>
-    // Dark Mode Toggle
-    const darkModeToggle = document.getElementById('darkModeToggle');
-    darkModeToggle.addEventListener('change', () => {
-      if (darkModeToggle.checked) {
-        document.body.classList.add('light');
-      } else {
-        document.body.classList.remove('light');
-      }
-    });
-    // Initialize with light mode on
-    document.body.classList.add('light');
-
-    // Activity Buttons + Repo Form
-    const activityButtons = document.querySelectorAll('.activity-buttons button');
-    const repoForm = document.getElementById('repoForm');
-    const repoUrlInput = document.getElementById('repoUrl');
-    const resultPre = document.getElementById('result');
-
-    let selectedActivity = null;
-
-    activityButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        selectedActivity = button.dataset.activity;
-        // Highlight active button visually
-        activityButtons.forEach(btn => btn.style.borderColor = btn === button ? 'var(--primary-hover)' : 'var(--primary)');
-      });
-    });
-
-    repoForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (!selectedActivity) {
-        alert('Please select an activity before submitting.');
-        return;
-      }
-      const repoUrl = repoUrlInput.value.trim();
-      if (!repoUrl) {
-        alert('Please enter a GitHub repository URL.');
-        return;
-      }
-
-      resultPre.textContent = 'Processing...';
-
-      try {
-        const response = await fetch('/activity', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ activity: selectedActivity, repo_url: repoUrl }),
-        });
-        if (!response.ok) {
-          throw new Error(`Server responded with status ${response.status}`);
-        }
-        const data = await response.json();
-        resultPre.textContent = data.result || 'No result returned.';
-      } catch (err) {
-        resultPre.textContent = `Error: ${err.message}`;
-      }
-    });
-
-    // Chat Section
     const messagesDiv = document.getElementById('messages');
     const chatForm = document.getElementById('chatForm');
     const chatInput = document.getElementById('chatInput');
-    const voiceBtn = document.getElementById('voiceBtn');
 
-    // Append message to chat window
+    chatForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const userMessage = chatInput.value.trim();
+      if (!userMessage) return;
+
+      appendMessage(userMessage, 'user');
+      chatInput.value = '';
+
+      // Simulate bot response
+      setTimeout(() => appendMessage("I'll get on that right away! 🧠", 'bot'), 1000);
+    });
+
     function appendMessage(text, sender = 'bot') {
       const msg = document.createElement('div');
-      msg.classList.add('message', sender);
+      msg.className = `message ${sender}`;
       msg.textContent = text;
       messagesDiv.appendChild(msg);
       messagesDiv.scrollTop = messagesDiv.scrollHeight;
     }
 
-    // Speak text using Web Speech API
-    function speakText(text) {
-      if (!window.speechSynthesis) return;
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-US';
-      window.speechSynthesis.speak(utterance);
-    }
-
-    // Send chat message to backend
-    async function sendChatMessage(message) {
-      appendMessage(message, 'user');
-      chatInput.value = '';
-      try {
-        const res = await fetch('/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message }),
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-        if (data.reply) {
-          appendMessage(data.reply, 'bot');
-          speakText(data.reply);
-        }
-      } catch (err) {
-        appendMessage(`Error: ${err.message}`, 'bot');
-      }
-    }
-
-    chatForm.addEventListener('submit', e => {
-      e.preventDefault();
-      const msg = chatInput.value.trim();
-      if (msg) sendChatMessage(msg);
+    // Optional: Add real voice recognition + backend call
+    document.getElementById('voiceBtn').addEventListener('click', () => {
+      alert("Voice input coming soon.");
     });
-
-    // Voice Input (Speech-to-Text)
-    let recognition;
-    let recognizing = false;
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      recognition = new SpeechRecognition();
-      recognition.lang = 'en-US';
-      recognition.interimResults = false;
-      recognition.maxAlternatives = 1;
-
-      recognition.onstart = () => {
-        recognizing = true;
-        voiceBtn.setAttribute('aria-pressed', 'true');
-        voiceBtn.title = "Click to stop voice input";
-        voiceBtn.textContent = "🛑";
-      };
-
-      recognition.onend = () => {
-        recognizing = false;
-        voiceBtn.setAttribute('aria-pressed', 'false');
-        voiceBtn.title = "Start voice input";
-        voiceBtn.textContent = "🎤";
-      };
-
-      recognition.onerror = (event) => {
-        console.error("Speech recognition error", event.error);
-        recognizing = false;
-        voiceBtn.setAttribute('aria-pressed', 'false');
-        voiceBtn.title = "Start voice input";
-        voiceBtn.textContent = "🎤";
-      };
-
-      recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        chatInput.value = transcript;
-        chatInput.focus();
-      };
-
-      voiceBtn.addEventListener('click', () => {
-        if (recognizing) {
-          recognition.stop();
-          recognizing = false;
-        } else {
-          recognition.start();
-        }
-      });
-    } else {
-      voiceBtn.style.display = 'none'; // hide if not supported
-    }
-
   </script>
+
 </body>
 </html>
