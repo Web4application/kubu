@@ -4,6 +4,37 @@ import subprocess
 import os
 import shutil
 import uuid
+from fastapi import FastAPI, WebSocket, BackgroundTasks
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from services.github_clone import clone_repo
+from services.project_analyzer import analyze_and_upgrade_project
+
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Update to specific domains for production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+class RepoURL(BaseModel):
+    url: str
+
+@app.post("/clone-and-analyze")
+async def clone_and_analyze_repo(repo: RepoURL, background_tasks: BackgroundTasks):
+    local_path = await clone_repo(repo.url)
+    background_tasks.add_task(analyze_and_upgrade_project, local_path)
+    return {"message": "Cloning started. Analysis will run in background.", "local_path": local_path}
+
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    while True:
+        data = await websocket.receive_text()
+        await websocket.send_text(f"Echo: {data}")
 
 app = FastAPI()
 
