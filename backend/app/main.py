@@ -6,6 +6,10 @@ from fastapi import FastAPI, HTTPException, BackgroundTasks, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import logging
+from fastapi import FastAPI, WebSocket, BackgroundTasks, HTTPException
+from app.services.github_clone import clone_repo
+from app.services.project_analyzer import analyze_and_upgrade_project
+from app.services.chat_service import chat_endpoint
 
 app = FastAPI()
 
@@ -99,3 +103,20 @@ async def websocket_endpoint(websocket: WebSocket):
     while True:
         data = await websocket.receive_text()
         await websocket.send_text(f"Echo: {data}")
+@app.websocket("/ws/chat")
+async def websocket_chat(websocket: WebSocket):
+    await chat_endpoint(websocket)
+
+@app.post("/clone-and-analyze")
+async def clone_and_analyze_repo(repo_url: dict, background_tasks: BackgroundTasks):
+    git_url = repo_url.get("git_url")
+    if not git_url:
+        raise HTTPException(status_code=400, detail="git_url required")
+    project_id = "some-uuid-or-hash"
+    project_path = f"/tmp/kubu_projects/{project_id}"
+    try:
+        clone_repo(git_url, project_path)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    background_tasks.add_task(analyze_and_upgrade_project, project_path)
+    return {"message": "Cloned and analysis started", "project_id": project_id}
