@@ -4,6 +4,64 @@ from petals.constants import PUBLIC_INITIAL_PEERS
 import cronitor
 from dataclasses import dataclass
 from typing import Optional
+from fastapi import FastAPI, HTTPException, Request
+from pydantic import BaseModel, HttpUrl
+from fastapi.middleware.cors import CORSMiddleware
+import tempfile
+import shutil
+import os
+import subprocess
+from typing import List
+import asyncio
+
+app = FastAPI()
+
+# Enable CORS for your frontend domain during dev or prod
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Change to your frontend origin in production!
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+class AnalysisRequest(BaseModel):
+    repo_url: HttpUrl
+
+class AnalysisResponse(BaseModel):
+    summary: str
+    files: List[str]
+    upgrade_status: str
+
+def list_files(start_path):
+    files = []
+    for root, _, filenames in os.walk(start_path):
+        for fname in filenames:
+            rel_path = os.path.relpath(os.path.join(root, fname), start_path)
+            files.append(rel_path)
+    return files
+
+@app.post("/api/start-analysis", response_model=AnalysisResponse)
+async def start_analysis(req: AnalysisRequest):
+    tmp_dir = tempfile.mkdtemp(prefix="repo_")
+    try:
+        # Clone the repo (shallow, single branch for speed)
+        clone_cmd = ["git", "clone", "--depth", "1", req.repo_url, tmp_dir]
+        proc = await asyncio.create_subprocess_exec(*clone_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = await proc.communicate()
+        if proc.returncode != 0:
+            raise HTTPException(status_code=400, detail=f"Git clone failed: {stderr.decode().strip()}")
+
+        files = list_files(tmp_dir)
+
+        # Dummy summary and upgrade_status — replace with your AI/analysis logic
+        summary = f"Repository at {req.repo_url} has {len(files)} files."
+        upgrade_status = "No upgrades detected (placeholder)."
+
+        return AnalysisResponse(summary=summary, files=files, upgrade_status=upgrade_status)
+
+    finally:
+        shutil.rmtree(tmp_dir, ignore_errors=True)
 
 # Define the ModelInfo data class
 @dataclass
