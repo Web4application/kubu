@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+openai
+python-dotenv
+gitpython
+black
+autopep8
+langchain
+pydantic
+aiofiles
+whisper
+gtts
+python-multipart
