@@ -13,7 +13,7 @@ openai "github.com/openai/openai-go"
 
 func main() {
 http.HandleFunc("/generate", generateHandler)
-http.HandleFunc("/kubu", kubuHandler) // Adding a new handler for kubu-hai functionality
+http.HandleFunc("/kubu-hai", kubu-haiHandler) // Adding a new handler for kubu-hai functionality
 log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
