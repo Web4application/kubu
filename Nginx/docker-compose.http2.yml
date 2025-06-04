@@ -1,0 +1,11 @@
+server {
+  listen 443 ssl http2;
+  server_name localhost;
+
+  ssl_certificate     /certs/dev.crt;
+  ssl_certificate_key /certs/dev.key;
+
+  location / {
+    proxy_pass http://webapp:8000;
+  }
+}
