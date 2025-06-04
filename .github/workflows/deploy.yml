@@ -1,0 +1,47 @@
+name: Deploy kubu-hai to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+      NODE_ENV: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run lint (fix mode)
+        run: npm run lint
+
+      - name: Run tests with coverage
+        run: npm test
+
+      - name: Build project
+        run: npm run prepare
+
+      - name: Deploy to GitHub Pages
+        uses: ./ # Adjust if you publish the deploy-pages action to a repo or marketplace
+        with:
+          # Add inputs here if your action needs them
+
+      - name: Notify Slack about deployment success
+        if: success()
+        uses: rtCamp/action-slack-notify@v2
+        with:
+          webhook_url: ${{ env.SLACK_WEBHOOK }}
+          message: ":rocket: kubu-hai deployed successfully to GitHub Pages!"
