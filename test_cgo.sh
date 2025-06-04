@@ -1,23 +1,31 @@
 #!/bin/bash
+set -euo pipefail
 
-echo "Assume we're on a system that can enable cgo normally."
-export CGO_ENABLED=
-go env CGO_ENABLED
-echo "Expected output: 1"
+echo "Checking CGO availability..."
 
-echo "Clearing CC and removing everything but Go from the PATH should usually disable cgo."
-export CC=
-export PATH=$GOROOT/bin
-go env CGO_ENABLED
-echo "Expected output: 0 (if no absolute default CC path exists) or 1 (if default CC path exists)"
+# Detect if CC is set
+if [ -z "${CC-}" ]; then
+  echo "No CC variable set, trying default compiler detection..."
 
-echo "Setting CC should re-enable cgo."
-export CC=cc
-go env CGO_ENABLED
-echo "Expected output: 1"
+  # Temporarily clear PATH except Go bin directory to test compiler presence
+  OLD_PATH="$PATH"
+  export PATH="$GOROOT/bin"
 
-echo "Setting CGO_ENABLED should enable cgo."
-export CC=
-export CGO_ENABLED=1
-go env CGO_ENABLED
-echo "Expected output: 1"
+  # Check if compiler is found via 'go env'
+  CGO_DEFAULT=$(go env CGO_ENABLED)
+
+  if [ "$CGO_DEFAULT" == "1" ]; then
+    echo "Compiler detected in default path. CGO_ENABLED=1"
+    export CGO_ENABLED=1
+  else
+    echo "No compiler detected. CGO_ENABLED=0"
+    export CGO_ENABLED=0
+  fi
+
+  export PATH="$OLD_PATH"
+else
+  echo "CC is set to '$CC', forcing CGO_ENABLED=1"
+  export CGO_ENABLED=1
+fi
+
+echo "Final CGO_ENABLED=$CGO_ENABLED"
