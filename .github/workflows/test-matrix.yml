@@ -1,0 +1,73 @@
+name: CI Test Matrix
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-matrix:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.9, 3.10, 3.11]
+        environment: [dev, staging, production]
+
+    services:
+      redis:
+        image: redis:6
+        ports:
+          - 6379:6379
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest httpx uvicorn
+
+    - name: Start FastAPI Test Server (Background)
+      run: |
+        nohup uvicorn tests.fixtures.server:app --host 0.0.0.0 --port 8000 &
+        sleep 3
+
+    - name: Run tests
+      env:
+        ENV: ${{ matrix.environment }}
+      run: |
+        echo "Running tests in $ENV environment"
+        pytest tests/ --maxfail=2 --disable-warnings -v
+
+  docker-nginx-http2:
+    name: Docker + NGINX + HTTP/2 Test
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build and run containers
+      run: |
+        docker-compose -f docker-compose.http2.yml up -d --build
+        sleep 5
+
+    - name: Run HTTP/2 smoke test
+      run: |
+        curl -I --http2-prior-knowledge https://localhost:443 --insecure
+        docker-compose logs
+
+    - name: Tear down
+      if: always()
+      run: docker-compose -f docker-compose.http2.yml down
