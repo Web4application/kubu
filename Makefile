@@ -1,4 +1,44 @@
-# Example: Makefile
+# Makefile for kubu-hai Python AI CLI tool
+
+APP_NAME = kubu-hai
+VENV_DIR = .venv
+
+PYTHON = $(VENV_DIR)/bin/python
+PIP = $(VENV_DIR)/bin/pip
+
+.PHONY: all venv install run clean install-system uninstall-system
+
+# Default target: create venv and install requirements
+all: venv install
+
+# Create Python virtual environment
+venv:
+	python3 -m venv $(VENV_DIR)
+
+# Install Python dependencies
+install:
+	$(PIP) install -U pip
+	$(PIP) install -r requirements.txt
+
+# Run the application
+run:
+	$(PYTHON) -m $(APP_NAME)
+
+# Clean virtual environment and pycache
+clean:
+	rm -rf $(VENV_DIR) __pycache__ .pytest_cache *.pyc
+
+# Optional system-wide install
+install-system:
+	sudo cp -r $(APP_NAME) /usr/local/lib/$(APP_NAME)
+	sudo cp bin/kubu-hai /usr/local/bin/kubu-hai
+	sudo chmod +x /usr/local/bin/kubu-hai
+
+# Optional uninstall
+uninstall-system:
+	sudo rm -rf /usr/local/lib/$(APP_NAME)
+	sudo rm -f /usr/local/bin/kubu-hai
+
 
 # Compiler and flags for C++
 CXX = g++
