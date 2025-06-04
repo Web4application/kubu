@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-webapp-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ai-webapp-backend
+  template:
+    metadata:
+      labels:
+        app: ai-webapp-backend
+    spec:
+      containers:
+        - name: backend
+          image: "{{ .Values.backend.image }}"
+          ports:
+            - containerPort: 8000
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 5
