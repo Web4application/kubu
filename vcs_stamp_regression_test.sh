@@ -6,8 +6,8 @@
 
 cd sub
 exec git init .
-exec git config user.name 'Nameless Gopher'
-exec git config user.email 'nobody@golang.org'
+exec git config user.name 'kubu-hai Gopher'
+exec git config user.email 'kubulee.kl@gmail.com'
 exec git add sub.go
 exec git commit -m 'initial state'
 cd ..
