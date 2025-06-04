@@ -1,0 +1,144 @@
+name: Full CI/CD Pipeline with Advanced AI Integration
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:  # manual trigger for AI retrain or deploy
+
+jobs:
+  build-frontend:
+    name: Build Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Cache Node modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-node-
+
+      - name: Setup Node.js 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - run: npm ci
+      - run: npm run build
+
+      - uses: actions/upload-pages-artifact@v1
+        with:
+          path: build
+
+  build-backend:
+    name: Build & Test Backend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Cache pip packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/backend/requirements.txt') }}
+          restore-keys: ${{ runner.os }}-pip-
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+
+      - run: pytest backend/tests
+
+  ai-model-training:
+    name: Train & Validate AI Model
+    runs-on: ubuntu-latest
+    needs: build-backend
+    if: contains(github.event.head_commit.message, 'train-ai') || github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Cache AI dependencies & data
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/pip
+            ./ai_data
+            ./models
+          key: ${{ runner.os }}-ai-${{ hashFiles('**/ai-requirements.txt') }}
+          restore-keys: ${{ runner.os }}-ai-
+
+      - name: Install AI dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r ai-requirements.txt
+
+      - name: Run AI training script
+        run: python ai/train_model.py
+
+      - name: Upload trained model artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: trained-model
+          path: ./models/
+
+  deploy:
+    name: Deploy Frontend to GitHub Pages
+    needs: build-frontend
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  deploy-ai-api:
+    name: Deploy AI Model API
+    runs-on: ubuntu-latest
+    needs: ai-model-training
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/')
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Download trained model artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: trained-model
+          path: ./models
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push AI API Docker image
+        run: |
+          docker build -t myorg/ai-api:latest ./ai-api
+          docker push myorg/ai-api:latest
+
+      - name: Deploy AI API to Cloud (example AWS ECS)
+        run: |
+          # Replace this placeholder with your actual deployment commands:
+          echo "Deploying AI API to production..."
