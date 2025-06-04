@@ -1,0 +1,111 @@
+name: 🚀 AI Webapp + Blockchain Multi-Env CI/CD
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+      - develop
+
+env:
+  AWS_REGION: us-west-2
+  DOCKER_REGISTRY: yourdockerrepo
+  KUBE_NAMESPACE: ai-webapp-prod
+
+jobs:
+  # 1️⃣ Terraform Infra Provisioning (infra as code)
+  terraform:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging'
+    steps:
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v2
+      - run: terraform init
+      - run: terraform validate
+      - run: terraform plan -out=tfplan
+      - run: terraform apply -auto-approve tfplan
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+  # 2️⃣ Build & Push Docker Images (backend + frontend + blockchain node)
+  build_and_push:
+    runs-on: ubuntu-latest
+    needs: terraform
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Login to Docker Registry
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build & Push Backend Image
+        run: |
+          docker build -t $DOCKER_REGISTRY/ai-backend:${{ github.sha }} ./backend
+          docker push $DOCKER_REGISTRY/ai-backend:${{ github.sha }}
+      - name: Build & Push Frontend Image
+        run: |
+          docker build -t $DOCKER_REGISTRY/ai-frontend:${{ github.sha }} ./frontend
+          docker push $DOCKER_REGISTRY/ai-frontend:${{ github.sha }}
+      - name: Build & Push Blockchain Node Image
+        run: |
+          docker build -t $DOCKER_REGISTRY/blockchain-node:${{ github.sha }} ./blockchain-node
+          docker push $DOCKER_REGISTRY/blockchain-node:${{ github.sha }}
+
+  # 3️⃣ Kubernetes Deploy (prod + staging)
+  deploy_k8s:
+    runs-on: ubuntu-latest
+    needs: build_and_push
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+      - name: Configure kubeconfig
+        run: echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+      - name: Helm Upgrade / Install
+        run: |
+          helm upgrade --install ai-webapp ./charts/ai-webapp-chart \
+            --namespace $KUBE_NAMESPACE \
+            --set backend.image=$DOCKER_REGISTRY/ai-backend:${{ github.sha }} \
+            --set frontend.image=$DOCKER_REGISTRY/ai-frontend:${{ github.sha }} \
+            --set blockchainNode.image=$DOCKER_REGISTRY/blockchain-node:${{ github.sha }} \
+            --wait --timeout 5m
+
+  # 4️⃣ SSH Deploy Fallback (staging only)
+  ssh_deploy:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/staging'
+    needs: build_and_push
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+      - name: Run deploy script
+        run: ./deploy.sh
+        env:
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+
+  # 5️⃣ Notifications (Slack/Discord)
+  notify:
+    runs-on: ubuntu-latest
+    needs: [terraform, build_and_push, deploy_k8s, ssh_deploy]
+    steps:
+      - name: Send Deployment Notification
+        uses: slackapi/slack-github-action@v1
+        with:
+          channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
+          slack-message: |
+            Deployment summary for commit ${{ github.sha }}:
+            - Terraform: ${{ needs.terraform.result }}
+            - Docker Build & Push: ${{ needs.build_and_push.result }}
+            - Kubernetes Deploy: ${{ needs.deploy_k8s.result }}
+            - SSH Deploy: ${{ needs.ssh_deploy.result }}
+
