@@ -1,0 +1,119 @@
+name: Go Build VCS Regression Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  vcs-regression-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo (optional)
+        uses: actions/checkout@v3
+
+      - name: Setup Go 1.18
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.18
+
+      - name: Setup Git
+        run: git --version
+
+      - name: Run VCS stamping regression test
+        shell: bash
+        run: |
+          set -euxo pipefail
+
+          TMPDIR=$(mktemp -d)
+          cd "$TMPDIR"
+
+          # Create test files as per your test scenario:
+
+          # go.mod
+          cat > go.mod <<EOF
+module example
+
+go 1.18
+EOF
+
+          # example.go
+          cat > example.go <<EOF
+package main
+
+func main() {}
+EOF
+
+          # sub/sub.go
+          mkdir sub
+          cat > sub/sub.go <<EOF
+package main
+
+func main() {}
+EOF
+
+          # Start the actual test commands:
+          # NOTE: I've converted 'exec' to normal commands (exec replaces shell, which we don't want here).
+
+          # Initialize git in sub module folder and commit sub.go
+          cd sub
+          git init
+          git config user.name 'Nameless Gopher'
+          git config user.email 'nobody@golang.org'
+          git add sub.go
+          git commit -m 'initial state'
+          cd ..
+
+          # Initialize main repo and add submodule
+          git init
+          git config user.name 'kubu-hai'
+          git config user.email 'kubulee.kl@golang.org'
+          git submodule add ./sub
+          git add go.mod example.go
+          git commit -m 'initial state'
+
+          # Control case: build main example.exe and check VCS info
+          go build -o example.exe .
+          go version -m example.exe | tee /dev/stderr | grep -P '^\tbuild\tvcs=git$'
+          go version -m example.exe | tee /dev/stderr | grep -P '^\tbuild\tvcs.modified=false$'
+
+          # Build sub.exe from sub folder (should NOT stamp VCS info)
+          go build -o sub.exe ./sub
+          go version -m sub.exe | tee /dev/stderr | grep -Pv '^\tbuild\tvcs'
+
+          # Build sub.exe with -buildvcs (should error)
+          set +e
+          go build -buildvcs -o sub.exe ./sub 2>&1 | tee /dev/stderr | grep -P 'error obtaining VCS status'
+          if [ "${PIPESTATUS[0]}" -eq 0 ]; then false; fi
+          set -e
+
+          # Build inside sub directory (should NOT stamp VCS info)
+          cd ./sub
+          go build -o sub.exe .
+          go version -m sub.exe | tee /dev/stderr | grep -Pv '^\tbuild\tvcs'
+
+          # Build inside sub directory with -buildvcs (should error)
+          set +e
+          go build -buildvcs -o sub.exe . 2>&1 | tee /dev/stderr | grep -P 'error obtaining VCS status'
+          if [ "${PIPESTATUS[0]}" -eq 0 ]; then false; fi
+          set -e
+          cd ..
+
+          # Remove git from PATH and test build -buildvcs errors for missing git
+          PATH= env -u PATH go build -buildvcs -o example.exe . 2>&1 | tee /dev/stderr | grep -P 'go: missing Git command\. See https://golang\.org/s/gogetcmd$'
+
+          # Without git, default build omits VCS info
+          PATH= env -u PATH go build -o example.exe .
+          go version -m example.exe | tee /dev/stderr | grep -Pv '^\tbuild\tvcs'
+
+          # Explicit -buildvcs=auto also omits VCS info without git
+          PATH= env -u PATH go build -buildvcs=auto -o example.exe .
+          go version -m example.exe | tee /dev/stderr | grep -Pv '^\tbuild\tvcs'
+
+          # Invalid flag value fails with usage
+          set +e
+          go build -buildvcs=hg -o example.exe . 2>&1 | tee /dev/stderr | grep -P 'invalid boolean value "hg" for -buildvcs: value is neither .auto. nor a valid bool'
+          if [ "${PIPESTATUS[0]}" -eq 0 ]; then false; fi
+          set -e
