@@ -98,3 +98,30 @@ clean_ruby:
 
 # Phony targets
 .PHONY: all clean run
+.PHONY: test test-install test-validate test-clean
+
+PACKAGE_NAME = your_package_name
+PACKAGE_VERSION = 1.0.0
+PACKAGE_FILE = build/aix/$(PACKAGE_NAME).$(PACKAGE_VERSION).bff
+TEMP_INSTALL_DIR = /tmp/aix_test_install
+
+test: test-install test-validate test-clean
+
+test-install:
+	@echo "Installing package for test..."
+	@mkdir -p $(TEMP_INSTALL_DIR)
+	# Simulate install, replace with actual installp command if available
+	@installp -agXYd $(PACKAGE_FILE) || (echo "Install failed!" && exit 1)
+
+test-validate:
+	@echo "Validating installed package files..."
+	# Example checks — adjust for your package’s real files and structure
+	@test -d /opt/$(PACKAGE_NAME) || (echo "Package directory missing!" && exit 1)
+	@test -f /etc/$(PACKAGE_NAME)/config.cfg || (echo "Config file missing!" && exit 1)
+	@echo "Validation passed."
+
+test-clean:
+	@echo "Cleaning up test install..."
+	@installp -u $(PACKAGE_NAME) || echo "Cleanup failed, manual intervention may be required"
+	@rm -rf $(TEMP_INSTALL_DIR)
+
