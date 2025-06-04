@@ -1,0 +1,36 @@
+steps:
+  - label: "📦 Build AIX Package"
+    command: |
+      chmod +x build_package.ksh
+      ./build_package.ksh /path/to/tempdir
+    artifact_paths:
+      - "build/aix/*.bff"
+
+  - label: "🔨 Run Tests"
+    depends_on: "📦 Build AIX Package"
+    command: |
+      make test
+    plugins:
+      - test-collector#v1.0.0:
+          files: "test-data-*.json"
+          format: "json"
+    artifact_paths:
+      - "test-data-*.json"
+
+  - label: "🚀 Deploy Package"
+    depends_on: "🔨 Run Tests"
+    command: |
+      # Example deployment, adjust to your infrastructure
+      scp build/aix/*.bff user@aix-server:/opt/packages/
+      ssh user@aix-server "installp -agXYd /opt/packages/${PKG}.${NAME}.${VERSION}.bff"
+    agents:
+      queue: aix-deploy
+
+  - label: "⏪ Rollback Package"
+    if: build.state == "failed" && build.previous_state == "passed"
+    command: |
+      # Rollback logic: uninstall last package or install previous stable version
+      ssh user@aix-server "installp -u ${PKG}.${NAME}"
+      ssh user@aix-server "installp -agXYd /opt/packages/${PKG}.${NAME}.stable.bff"
+    agents:
+      queue: aix-deploy

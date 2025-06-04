@@ -1,0 +1,3 @@
+fastapi
+uvicorn[standard]
+python-multipart  # If you want to handle file uploads later

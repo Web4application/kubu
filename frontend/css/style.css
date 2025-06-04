@@ -1,0 +1,42 @@
+:root {
+  --bg-color: #fff;
+  --text-color: #222;
+  --button-bg: #007bff;
+  --button-text: #fff;
+}
+
+body.dark {
+  --bg-color: #121212;
+  --text-color: #eee;
+  --button-bg: #bb86fc;
+  --button-text: #000;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+}
+
+button {
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  padding: 10px 15px;
+  margin: 5px;
+  cursor: pointer;
+}
+
+.hidden {
+  display: none;
+}
+
+nav button {
+  margin-right: 10px;
+}
+
+textarea {
+  width: 100%;
+}
