@@ -1,5 +1,4 @@
 #!/bin/bash
-
 env TESTGO_VERSION=go1.500
 env TESTGO_VERSION_SWITCH=switch
 
