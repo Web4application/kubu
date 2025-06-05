@@ -18,7 +18,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-BASE_DIR = "/tmp/kubu_projects"
+BASE_DIR = "/tmp/kubu_hai"
 
 class RepoUrl(BaseModel):
     git_url: str
