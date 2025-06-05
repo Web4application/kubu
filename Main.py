@@ -18,7 +18,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-BASE_DIR = "/tmp/kubu_projects"
+BASE_DIR = "/backend/app/services"
 os.makedirs(BASE_DIR, exist_ok=True)
 
 # --- Models ---
