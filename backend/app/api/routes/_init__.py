@@ -12,7 +12,7 @@ import subprocess
 # Configure OpenAI API key (set env var OPENAI_API_KEY)
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-BASE_DIR = Path("/tmp/kubu_projects")
+BASE_DIR = Path("path/to/project")
 BASE_DIR.mkdir(parents=True, exist_ok=True)
 
 app = FastAPI()
