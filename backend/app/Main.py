@@ -1,78 +1,114 @@
 import os
-import json
-import logging
-import torch
-from cpufeature import CPUFeature
-from petals.constants import PUBLIC_INITIAL_PEERS
-from dataclasses import dataclass
-from typing import Optional
+import uuid
+import asyncio
+import shutil
+import subprocess
+from fastapi import FastAPI, WebSocket, BackgroundTasks, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
-# Load configuration from a JSON file
-def load_config(config_path='config.json'):
-    with open(config_path, 'r') as config_file:
-        config = json.load(config_file)
-    return config
+app = FastAPI()
 
-config = load_config()
+# CORS — tighten this for production
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], 
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-# Setup logging
-def setup_logging(log_level=logging.INFO):
-    logging.basicConfig(level=log_level, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    logger = logging.getLogger(__name__)
-    return logger
+BASE_DIR = "/backend/app/services"
+os.makedirs(BASE_DIR, exist_ok=True)
 
-logger = setup_logging()
-logger.info("Kubu-Hai package initialized")
+# --- Models ---
+class RepoUrl(BaseModel):
+    git_url: str
 
-# Utility function
-def print_welcome_message():
-    print("Welcome to the Kubu-Hai AI package!")
+# --- Helper: Async shell command streaming ---
+async def run_cmd_stream(cmd: str, websocket: WebSocket):
+    process = await asyncio.create_subprocess_shell(
+        cmd,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
+    )
+    while True:
+        line = await process.stdout.readline()
+        if not line:
+            break
+        await websocket.send_text(line.decode().strip())
+    await process.wait()
+    if process.returncode != 0:
+        error = (await process.stderr.read()).decode()
+        await websocket.send_text(f"ERROR: {error}")
+        raise Exception(f"Command failed: {error}")
 
-print_welcome_message()
+# --- Clone + Analyze: WebSocket Streaming ---
+@app.websocket("/ws/clone")
+async def websocket_clone(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        data = await websocket.receive_json()
+        git_url = data.get("git_url")
+        if not git_url:
+            await websocket.send_text("ERROR: 'git_url' required")
+            return
 
-# ModelInfo class
-@dataclass
-class ModelInfo:
-    repo: str
-    adapter: Optional[str] = None
+        project_id = str(uuid.uuid4())
+        project_path = os.path.join(BASE_DIR, project_id)
+        os.makedirs(project_path, exist_ok=True)
 
-# Model configurations
-MODELS = [
-    ModelInfo(repo="meta-llama/Llama-2-70b-chat-hf"),
-    ModelInfo(repo="stabilityai/StableBeluga2"),
-    ModelInfo(repo="enoch/llama-65b-hf"),
-    ModelInfo(repo="enoch/llama-65b-hf", adapter="timdettmers/guanaco-65b"),
-    ModelInfo(repo="bigscience/bloomz"),
-]
-DEFAULT_MODEL_NAME = "enoch/llama-65b-hf"
+        await websocket.send_text(f"Cloning repo {git_url} into {project_path}...\n")
+        await run_cmd_stream(f"git clone {git_url} {project_path}", websocket)
 
-INITIAL_PEERS = PUBLIC_INITIAL_PEERS
-# Set this to a list of multiaddrs to connect to a private swarm instead of the public one, for example:
-# INITIAL_PEERS = ['/ip4/10.1.2.3/tcp/31234/p2p/QmcXhze98AcgGQDDYna23s4Jho96n8wkwLJv78vxtFNq44']
+        await websocket.send_text("Starting AI analysis...\n")
+        for i in range(5):  # Simulate streaming progress
+            await asyncio.sleep(1)
+            await websocket.send_text(f"Analyzing... step {i+1}/5")
 
-DEVICE = "cpu"
+        await websocket.send_text("✅ Analysis complete!")
+    except Exception as e:
+        await websocket.send_text(f"❌ Exception: {str(e)}")
+    finally:
+        await websocket.close()
 
-if DEVICE == "cuda":
-    TORCH_DTYPE = "auto"
-elif CPUFeature["AVX512f"] and CPUFeature["OS_AVX512"]:
-    TORCH_DTYPE = torch.bfloat16
-else:
-    TORCH_DTYPE = torch.float32  # You can use bfloat16 in this case too, but it will be slow
+# --- Basic Chat Echo WebSocket ---
+@app.websocket("/ws/chat")
+async def websocket_chat(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        while True:
+            message = await websocket.receive_text()
+            response = f"Echo: {message}"
+            await websocket.send_text(response)
+    except Exception:
+        await websocket.close()
 
-STEP_TIMEOUT = 5 * 60
-MAX_SESSIONS = 50  # Has effect only for API v1 (HTTP-based)
+# --- Synchronous Git Clone ---
+def clone_repo(git_url: str, destination: str):
+    result = subprocess.run(["git", "clone", git_url, destination],
+                            capture_output=True, text=True)
+    if result.returncode != 0:
+        raise Exception(result.stderr)
 
-# Importing necessary modules from the package
-from .ai_kubu import some_function
-from .ai_main import main_function
-from .ai_model import build_model
+# --- Background AI Task ---
+async def analyze_and_upgrade_project(project_path: str):
+    await asyncio.sleep(5)
+    with open(os.path.join(project_path, "analysis.log"), "w") as f:
+        f.write("AI Analysis complete.\n")
 
-# Package-level variable
-__version__ = '1.0.0'
+# --- Clone + Analyze Background Task Endpoint ---
+@app.post("/clone-and-analyze")
+async def clone_and_analyze_repo(repo: RepoUrl, background_tasks: BackgroundTasks):
+    git_url = repo.git_url
+    project_id = str(uuid.uuid4())
+    project_path = os.path.join(BASE_DIR, project_id)
 
-# Initialization code
-def initialize():
-    print("Kubu-Hai package initialized")
+    try:
+        os.makedirs(project_path, exist_ok=True)
+        clone_repo(git_url, project_path)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
-# Define what gets imported when using 'from package import *'
-__all__ = ['some_function', 'main_function', 'build_model', 'initialize', 'load_config', 'setup_logging', 'print_welcome_message']
+    background_tasks.add_task(analyze_and_upgrade_project, project_path)
+    return {"message": "✅ Cloned and analysis started", "project_id": project_id}
