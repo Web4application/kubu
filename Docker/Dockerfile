@@ -1,2 +1,30 @@
 # Dockerfile for docker
-docker pull ghcr.io/web4application/kubu:sha256-65a937d797bd4a24738624dc6d2e0f7a7e52ee300c0ed459c653674c212fe2d8.sig
+# Base Python stage
+FROM python:3.11-slim as python-build
+WORKDIR /app/python
+COPY python/requirements.txt .
+RUN pip install -r requirements.txt
+COPY python/ .
+
+# Base C++ stage
+FROM gcc:12 as cpp-build
+WORKDIR /app/cpp
+COPY cpp/ .
+RUN make
+
+# Base Ruby stage
+FROM ruby:3.2 as ruby-build
+WORKDIR /app/ruby
+COPY ruby/ .
+RUN bundle install
+
+# Final image combining all
+FROM debian:bookworm-slim
+WORKDIR /app
+
+COPY --from=python-build /app/python /app/python
+COPY --from=cpp-build /app/cpp/bin /app/cpp/bin
+COPY --from=ruby-build /app/ruby /app/ruby
+
+CMD ["bash"]
+
