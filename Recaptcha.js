@@ -13,7 +13,7 @@ async function createAssessment({
   projectID = "web4-426302",
   recaptchaKey = "6LfJpPcpAAAAAHIj2W9HtjMs_6mBoWy_JQGyL36g",
   token = "action-token",
-  recaptchaAction = "action-name",
+  recaptchaAction = "verification",
 }) {
   // Create the reCAPTCHA client.
   // TODO: Cache the client generation code (recommended) or call client.close() before exiting the method.
