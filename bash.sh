@@ -14,3 +14,4 @@ python3 audit_repo.py
 docker pull ghcr.io/web4application/kubu:main
 docker pull ghcr.io/web4application/kubu@sha256:<digest>
 echo $CR_PAT | docker login ghcr.io -u USERNAME --password-stdin
+docker build -t ghcr.io/web4application/kubu:main .
