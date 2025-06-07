@@ -1,14 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-    pygments.lexers.templates
-    ~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    Lexers for various template engines' markup.
-
-    :copyright: Copyright 2006-2019 by the Pygments team, see AUTHORS.
-    :license: BSD, see LICENSE for details.
-"""
-
 import re
 
 from pygments.lexers.html import HtmlLexer, XmlLexer
