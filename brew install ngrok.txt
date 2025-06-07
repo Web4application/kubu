@@ -1,4 +1,0 @@
-brew install ngrok
-ngrok config add-authtoken 2y96VwzmhS1YV6vgll2Ua411oGc_755Qcpps22pznftiuGZWr
-ngrok http http://localhost:8080
-ngrok http --url=above-feasible-lobster.ngrok-free.app 80
