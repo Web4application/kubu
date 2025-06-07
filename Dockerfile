@@ -112,3 +112,5 @@ COPY --from=cpp-build /app/cpp/bin /app/cpp/bin
 COPY --from=ruby-build /app/ruby /app/ruby
 
 CMD ["bash"]
+
+LABEL org.opencontainers.image.source="https://github.com/Web4application/kubu.git"
