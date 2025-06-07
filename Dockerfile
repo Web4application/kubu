@@ -1,3 +1,52 @@
+# Use Microsoft's universal dev container as base
+FROM mcr.microsoft.com/devcontainers/universal:2
+
+# Metadata
+LABEL maintainer="Web4application Team <team@web4application.com>"
+
+# Update & install system dependencies for Python, C++, Ruby, Node
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    cmake \
+    python3.11 python3-pip python3-venv python3.11-venv \
+    ruby-full \
+    nodejs npm \
+    git \
+    curl \
+    docker.io \
+    postgresql-client \
+    redis-tools \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Bundler for Ruby
+RUN gem install bundler
+
+# Upgrade npm & install common global node tools (optional)
+RUN npm install -g npm@latest yarn
+
+# Set Python3.11 as default python3
+RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1
+
+# Create workspace directory
+WORKDIR /workspace
+
+# Copy your requirement files (adjust if you want)
+COPY requirements.txt /workspace/
+RUN pip3 install --no-cache-dir -r requirements.txt
+
+# (Optional) Copy Ruby gems file and install gems
+COPY Gemfile* /workspace/
+RUN if [ -f Gemfile ]; then bundle install; fi
+
+# (Optional) Copy package.json and install node modules
+COPY package.json package-lock.json* /workspace/
+RUN if [ -f package.json ]; then npm install; fi
+
+# Add vscode user permissions to use docker (docker-in-docker)
+RUN usermod -aG docker vscode
+
+# Default shell
+CMD [ "/bin/bash" ]
 # Use Ubuntu base
 FROM ubuntu:22.04
 
