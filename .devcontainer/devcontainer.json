@@ -1,0 +1,29 @@
+{
+  "name": "Kubu AI-Blockchain Dev Container",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "runArgs": ["--init", "--privileged"],
+  "features": {
+    "git": {},
+    "docker-in-docker": {}
+  },
+  "postCreateCommand": "pip install --upgrade pip && pip install -r requirements.txt && gem install bundler && bundle install || true && npm install || true",
+  "remoteUser": "vscode",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-vscode.cpptools",
+        "rebornix.Ruby",
+        "dbaeumer.vscode-eslint",
+        "ms-azuretools.vscode-docker",
+        "ms-azuretools.vscode-devcontainers"
+      ]
+    }
+  },
+  "settings": {
+    "terminal.integrated.shell.linux": "/bin/bash"
+  }
+}

@@ -1,48 +1,70 @@
-name: CI/CD
+name: CI/CD Pipeline
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - develop
+  pull_request:
 
 jobs:
-  build_and_test:
+  lint-and-test:
     runs-on: ubuntu-latest
-
     services:
-      docker:
-        image: docker:20.10.16
-        options: --privileged
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: kubu_test
         ports:
-          - 8000:8000
-
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Set up Python 3.11
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.11"
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r backend/requirements.txt
-        pip install pytest
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest flake8
 
-    - name: Run backend tests
-      run: pytest backend/tests || true  # (Add tests as you write them)
+      - name: Lint code
+        run: flake8 .
 
-    - name: Build frontend
-      working-directory: frontend
-      run: |
-        npm install
-        npm run build
+      - name: Run tests
+        run: pytest tests/
 
-    - name: Build and push Docker image
-      uses: docker/build-push-action@v4
-      with:
-        push: false
-        tags: kubu-hai:latest
+  build-and-push-docker:
+    needs: lint-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
 
-    - name: Deploy (stub)
-      run: echo "Deploy steps here (docker-compose up -d or to cloud)"
+      - name: Build Docker image
+        run: docker build -t yourdockerhub/kubu-backend:latest ./backend
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Push Docker image
+        run: docker push yourdockerhub/kubu-backend:latest
+
+  deploy:
+    needs: build-and-push-docker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Kubernetes (placeholder)
+        run: echo "Add your kubectl apply commands here"
