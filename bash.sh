@@ -15,3 +15,9 @@ docker pull ghcr.io/web4application/kubu:main
 docker pull ghcr.io/web4application/kubu@sha256:<digest>
 echo $CR_PAT | docker login ghcr.io -u USERNAME --password-stdin
 docker build -t ghcr.io/web4application/kubu:main .
+# Generate key (only once)
+cosign generate-key-pair
+
+# Sign image
+cosign sign --key cosign.key ghcr.io/web4application/kubu:main
+cosign verify --key cosign.pub ghcr.io/web4application/kubu:main
