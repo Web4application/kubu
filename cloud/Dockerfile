@@ -4,7 +4,7 @@ FROM mcr.microsoft.com/devcontainers/universal:2
 # Metadata labels for better traceability and provenance
 LABEL org.opencontainers.image.source="https://github.com/Web4application/kubu.git"
 LABEL org.opencontainers.image.description="Kubu: AI webapp blockchain multi-language dev environment."
-LABEL org.opencontainers.image.maintainer="Web4application <your-email@example.com>"
+LABEL org.opencontainers.image.maintainer="Web4application <web4application@gmail.com>"
 
 # Set working directory inside container
 WORKDIR /workspace/kubu
