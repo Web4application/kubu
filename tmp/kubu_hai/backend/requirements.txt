@@ -1,7 +1,0 @@
-fastapi
-uvicorn[standard]
-alembic
-sqlalchemy
-psycopg2-binary
-redis
-python-dotenv
