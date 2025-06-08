@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubuverse
+  labels:
+    app: kubuverse
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: kubuverse
+  template:
+    metadata:
+      labels:
+        app: kubuverse
+    spec:
+      containers:
+        - name: kubuverse
+          image: ghcr.io/web4application/kubuverse:latest
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubuverse-service
+spec:
+  selector:
+    app: kubuverse
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer
