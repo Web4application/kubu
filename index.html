@@ -1,600 +1,271 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Kubu-Hai AI Project Analyzer & Chat</title>
+  <title>Kubuverse Integration</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+    rel="stylesheet"
+  />
   <style>
-    /* Root colors */
-    :root {
-      --bg-light: #f5f7fa;
-      --text-light: #222;
-      --bg-dark: #1e1e2f;
-      --text-dark: #e0e0e0;
-      --primary: #61dafb;
-      --primary-hover: #21a1f1;
-      --button-bg: var(--primary);
-      --button-text: #1e1e1e;
-    }
-
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: var(--bg-dark);
-      color: var(--text-dark);
-      margin: 0;
-      padding: 1rem 2rem;
+    body, html {
+      margin: 0; padding: 0; height: 100%;
+      font-family: 'Inter', sans-serif;
+      background: #1e293b;
+      color: #a5b4fc;
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-height: 100vh;
-      transition: background-color 0.3s, color 0.3s;
     }
 
-    body.light {
-      background: var(--bg-light);
-      color: var(--text-light);
+    header {
+      width: 100%;
+      max-width: 900px;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #334155;
+      box-shadow: 0 2px 10px #0f172a88;
     }
 
     h1 {
-      margin-bottom: 1rem;
+      margin: 0;
       font-weight: 700;
-      color: var(--primary);
+      color: #c7d2fe;
     }
 
-    .dashboard {
-      max-width: 900px;
+    nav a {
+      color: #3b82f6;
+      font-weight: 600;
+      text-decoration: none;
+      margin-left: 1rem;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover,
+    nav a:focus {
+      color: #60a5fa;
+      outline: none;
+      text-decoration: underline;
+    }
+
+    main {
       width: 100%;
+      max-width: 900px;
+      padding: 1.5rem 2rem;
+      background: #334155;
+      border-radius: 12px;
+      box-shadow: 0 0 20px #3b82f6aa;
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    /* Form and input */
-    form {
-      display: flex;
-      gap: 0.5rem;
-      width: 80%;
-    }
-
-    input[type="text"] {
+      gap: 2rem;
       flex-grow: 1;
-      padding: 0.75rem;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
-      transition: border-color 0.3s;
+      min-height: 600px;
     }
 
-    input[type="text"]:focus {
-      outline: none;
-      border-color: var(--primary);
+    #controls {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
     }
 
     button {
-      background-color: var(--button-bg);
-      border: none;
-      padding: 0 1.5rem;
-      border-radius: 6px;
+      background-color: #6366f1;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
       font-weight: 700;
-      color: var(--button-text);
       cursor: pointer;
       transition: background-color 0.3s ease;
-    }
-
-    button:hover:not(:disabled) {
-      background-color: var(--primary-hover);
-    }
-
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    pre {
-      background: #2d2d44;
-      padding: 1rem;
-      border-radius: 8px;
-      width: 100%;
-      height: 250px;
-      overflow: auto;
-      white-space: pre-wrap;
-      word-break: break-word;
-      box-shadow: 0 0 10px #61dafb55;
-      transition: background-color 0.3s;
-      color: var(--text-dark);
-    }
-
-    body.light pre {
-      background: #ddd;
-      color: #222;
-      box-shadow: 0 0 10px #61dafbfaa;
-    }
-
-    .toggle-container {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-      justify-content: flex-end;
-    }
-
-    .toggle-switch {
-      position: relative;
-      width: 50px;
-      height: 24px;
-    }
-
-    .toggle-switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #ccc;
-      border-radius: 34px;
-      transition: 0.4s;
-    }
-
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 18px;
-      width: 18px;
-      left: 3px;
-      bottom: 3px;
-      background-color: white;
-      border-radius: 50%;
-      transition: 0.4s;
-    }
-
-    input:checked + .slider {
-      background-color: var(--primary);
-    }
-
-    input:checked + .slider:before {
-      transform: translateX(26px);
-    }
-
-    .activity-buttons {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-bottom: 1rem;
-    }
-
-    .activity-buttons button {
-      background-color: transparent;
-      border: 2px solid var(--primary);
-      color: var(--primary);
-      font-weight: 600;
-      padding: 0.5rem 1.2rem;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .activity-buttons button.active {
-      background-color: var(--primary);
-      color: var(--button-text);
-      border-color: var(--primary-hover);
-    }
-
-    .activity-buttons button:hover:not(.active) {
-      background-color: var(--primary);
-      color: var(--button-text);
-    }
-
-    /* Chat section */
-    .chat-container {
-      border: 1px solid var(--primary);
-      border-radius: 8px;
-      background: #12122d;
-      height: 350px;
-      display: flex;
-      flex-direction: column;
-      padding: 1rem;
-      overflow: hidden;
-      box-shadow: 0 0 10px #61dafbaa;
-    }
-
-    body.light .chat-container {
-      background: #f0f4ff;
-      border-color: var(--primary);
-      box-shadow: 0 0 10px #61dafbfff;
-    }
-
-    .messages {
-      flex-grow: 1;
-      overflow-y: auto;
-      margin-bottom: 1rem;
-      color: var(--text-dark);
-      font-size: 0.9rem;
-    }
-
-    .message {
-      margin-bottom: 0.8rem;
-      max-width: 70%;
-      padding: 0.5rem 1rem;
-      border-radius: 15px;
-      line-height: 1.3;
-      word-wrap: break-word;
-      box-shadow: 0 0 5px #00000050;
-      user-select: text;
-      white-space: pre-wrap;
-    }
-
-    .message.user {
-      background: var(--primary);
-      color: var(--button-text);
-      align-self: flex-end;
-      border-bottom-right-radius: 0;
-    }
-
-    .message.bot {
-      background: #44475a;
-      color: var(--text-dark);
-      align-self: flex-start;
-      border-bottom-left-radius: 0;
-    }
-
-    body.light .message.bot {
-      background: #e1e6ff;
-      color: #222;
-    }
-
-    .chat-input-container {
-      display: flex;
-      gap: 0.5rem;
-    }
-
-    .chat-input {
-      flex-grow: 1;
-      padding: 0.75rem;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
-      transition: border-color 0.3s;
-    }
-
-    .chat-input:focus {
-      outline: none;
-      border-color: var(--primary);
-    }
-
-    .voice-btn {
-      background-color: var(--button-bg);
       border: none;
-      border-radius: 50%;
-      width: 42px;
-      height: 42px;
-      cursor: pointer;
-      color: var(--button-text);
-      font-size: 1.2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background-color 0.3s;
+      user-select: none;
+      font-size: 1rem;
+      min-width: 150px;
     }
 
-    .voice-btn.active {
-      background-color: var(--primary-hover);
-      box-shadow: 0 0 8px var(--primary-hover);
+    button:hover {
+      background-color: #4f46e5;
     }
 
-    .voice-btn:hover {
-      background-color: var(--primary-hover);
+    #wallet-status, #gas-price-widget {
+      font-family: monospace;
+      color: #93c5fd;
+      align-self: center;
+      min-width: 220px;
+      text-align: center;
+    }
+
+    iframe {
+      width: 100%;
+      height: 650px;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 0 30px #3b82f6cc;
+      background: white;
+      flex-grow: 1;
+    }
+
+    @media (max-width: 720px) {
+      main {
+        padding: 1rem;
+      }
+      #controls {
+        flex-direction: column;
+        align-items: center;
+      }
+      button, #wallet-status, #gas-price-widget {
+        min-width: auto;
+        width: 100%;
+      }
+      iframe {
+        height: 500px;
+      }
     }
   </style>
 </head>
 <body>
+  <header>
+    <h1>Kubuverse</h1>
+    <nav>
+      <a href="#wallet-section">Wallet</a>
+      <a href="#gas-section">Gas Price</a>
+    </nav>
+  </header>
 
-  <div class="dashboard" role="main">
-
-    <div class="toggle-container">
-      <label for="darkModeToggle">Dark Mode</label>
-      <label class="toggle-switch" aria-label="Toggle dark mode">
-        <input type="checkbox" id="darkModeToggle" aria-checked="false" />
-        <span class="slider"></span>
-      </label>
-    </div>
-
-    <h1>Kubu-Hai AI Project Analyzer & Chat</h1>
-
-    <div class="activity-buttons" role="group" aria-label="Project Activities">
-      <button data-activity="analyze" type="button" aria-pressed="false">Analyze Repo</button>
-      <button data-activity="summary" type="button" aria-pressed="false">Generate Summary</button>
-      <button data-activity="upgrade" type="button" aria-pressed="false">Upgrade Project</button>
-      <button data-activity="readme" type="button" aria-pressed="false">Create README</button>
-      <button data-activity="unittest" type="button" aria-pressed="false">Generate Unit Tests</button>
-      <button data-activity="format" type="button" aria-pressed="false">Format Code</button>
-      <button data-activity="comment" type="button" aria-pressed="false">Add Comments</button>
-    </div>
-
-    <form id="queryForm" aria-label="Ask AI about your project">
-      <input
-        id="queryInput"
-        type="text"
-        name="query"
-        placeholder="Type your question or command here..."
-        aria-required="true"
-        autocomplete="off"
-        spellcheck="false"
-      />
-      <button type="submit" aria-label="Send query">Send</button>
-      <button
-        type="button"
-        id="voiceToggle"
-        class="voice-btn"
-        aria-pressed="false"
-        aria-label="Toggle voice input"
-        title="Toggle voice input"
-      >🎙️</button>
-    </form>
-
-    <pre id="result" role="region" aria-live="polite" aria-atomic="true" tabindex="0"></pre>
-
-    <section class="chat-container" aria-label="Chat with AI">
-      <div class="messages" id="chatMessages" role="log" aria-live="polite"></div>
-      <div class="chat-input-container">
-        <input
-          id="chatInput"
-          type="text"
-          placeholder="Type your message..."
-          aria-label="Chat message input"
-          autocomplete="off"
-          spellcheck="false"
-        />
-        <button id="chatSend" aria-label="Send chat message" type="button">Send</button>
-        <button
-          id="chatVoiceToggle"
-          class="voice-btn"
-          aria-pressed="false"
-          aria-label="Toggle voice input for chat"
-          title="Toggle voice input"
-        >🎙️</button>
+  <main>
+    <div id="controls">
+      <div id="wallet-section" style="display:flex; flex-direction: column; align-items: center;">
+        <button id="connect-wallet-btn">Connect Wallet</button>
+        <p id="wallet-status">Not connected</p>
       </div>
-    </section>
 
-  </div>
+      <div id="gas-section" style="display:flex; flex-direction: column; align-items: center;">
+        <p>Live Ethereum Gas Price</p>
+        <div id="gas-price-widget">
+          Gas Price: <span id="gas-price">Loading...</span> Gwei
+        </div>
+      </div>
+    </div>
+
+    <!-- Embed kubuverse GitHub Pages app -->
+    <iframe
+      src="https://web4application.github.io/kubuverse/"
+      title="Kubuverse App"
+      sandbox="allow-scripts allow-same-origin allow-forms"
+    ></iframe>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.7.2/dist/ethers.min.js"></script>
+  <script>
+    (async () => {
+      const connectBtn = document.getElementById('connect-wallet-btn');
+      const statusText = document.getElementById('wallet-status');
+
+      if (!window.ethereum) {
+        statusText.textContent =
+          'No Ethereum wallet detected. Please install MetaMask or compatible wallet.';
+        connectBtn.disabled = true;
+        return;
+      }
+
+      let provider;
+      try {
+        provider = new ethers.BrowserProvider(window.ethereum);
+      } catch (err) {
+        statusText.textContent = 'Error initializing provider: ' + err.message;
+        connectBtn.disabled = true;
+        return;
+      }
+
+      async function connectWallet() {
+        try {
+          const accounts = await provider.send('eth_requestAccounts', []);
+          if (accounts.length === 0) {
+            statusText.textContent = 'No accounts found.';
+            return;
+          }
+
+          const account = accounts[0];
+          const network = await provider.getNetwork();
+
+          statusText.textContent = `Connected: ${account.slice(
+            0,
+            6
+          )}...${account.slice(-4)} on ${network.name}`;
+          connectBtn.textContent = 'Disconnect Wallet';
+
+          connectBtn.onclick = disconnectWallet;
+        } catch (err) {
+          statusText.textContent = 'Connection rejected or failed.';
+        }
+      }
+
+      function disconnectWallet() {
+        statusText.textContent = 'Wallet disconnected.';
+        connectBtn.textContent = 'Connect Wallet';
+        connectBtn.onclick = connectWallet;
+      }
+
+      connectBtn.onclick = connectWallet;
+
+      if (window.ethereum.on) {
+        window.ethereum.on('accountsChanged', (accounts) => {
+          if (accounts.length === 0) {
+            disconnectWallet();
+          } else {
+            connectWallet();
+          }
+        });
+
+        window.ethereum.on('chainChanged', (_chainId) => {
+          window.location.reload();
+        });
+      }
+    })();
+  </script>
 
   <script>
-    (() => {
-      const body = document.body;
-      const darkModeToggle = document.getElementById('darkModeToggle');
-      const activityButtons = document.querySelectorAll('.activity-buttons button');
-      const queryForm = document.getElementById('queryForm');
-      const queryInput = document.getElementById('queryInput');
-      const result = document.getElementById('result');
-      const voiceToggle = document.getElementById('voiceToggle');
+    (async () => {
+      const gasPriceEl = document.getElementById('gas-price');
 
-      // Chat elements
-      const chatMessages = document.getElementById('chatMessages');
-      const chatInput = document.getElementById('chatInput');
-      const chatSend = document.getElementById('chatSend');
-      const chatVoiceToggle = document.getElementById('chatVoiceToggle');
-
-      // Voice recognition states
-      let recognition;
-      let recognizing = false;
-
-      // Load dark mode preference from localStorage or default to dark
-      const savedMode = localStorage.getItem('darkMode') || 'dark';
-      if (savedMode === 'light') {
-        body.classList.add('light');
-        darkModeToggle.checked = true;
-        darkModeToggle.setAttribute('aria-checked', 'true');
-      }
-
-      // Dark mode toggle handler
-      darkModeToggle.addEventListener('change', () => {
-        if (darkModeToggle.checked) {
-          body.classList.add('light');
-          darkModeToggle.setAttribute('aria-checked', 'true');
-          localStorage.setItem('darkMode', 'light');
-        } else {
-          body.classList.remove('light');
-          darkModeToggle.setAttribute('aria-checked', 'false');
-          localStorage.setItem('darkMode', 'dark');
-        }
-      });
-
-      // Activity button selection handler
-      function clearActiveButtons() {
-        activityButtons.forEach(btn => {
-          btn.classList.remove('active');
-          btn.setAttribute('aria-pressed', 'false');
-        });
-      }
-
-      activityButtons.forEach(button => {
-        button.addEventListener('click', () => {
-          clearActiveButtons();
-          button.classList.add('active');
-          button.setAttribute('aria-pressed', 'true');
-          queryInput.placeholder = `Ask AI about ${button.textContent.toLowerCase()}...`;
-          queryInput.focus();
-        });
-      });
-
-      // Set default active button on page load
-      if (activityButtons.length > 0) {
-        activityButtons[0].click();
-      }
-
-      // Form submission handler
-      queryForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const query = queryInput.value.trim();
-        if (!query) return;
-
-        result.textContent = 'Processing your request... 🚀';
-        // Here you'd typically call your backend or AI API with the query and active activity
-
-        // Mock response for demo
-        setTimeout(() => {
-          result.textContent = `Response for "${query}" (Activity: ${document.querySelector('.activity-buttons button.active').dataset.activity})`;
-          result.focus();
-        }, 800);
-      });
-
-      // Voice recognition setup for main query input
-      function setupRecognition(onResultCallback) {
-        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-          alert('Speech recognition not supported in this browser.');
-          return null;
-        }
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        const recognitionInstance = new SpeechRecognition();
-        recognitionInstance.lang = 'en-US';
-        recognitionInstance.interimResults = false;
-        recognitionInstance.maxAlternatives = 1;
-
-        recognitionInstance.onresult = event => {
-          const transcript = event.results[0][0].transcript;
-          onResultCallback(transcript);
-        };
-
-        recognitionInstance.onerror = event => {
-          console.error('Speech recognition error', event.error);
-          stopRecognition();
-        };
-
-        recognitionInstance.onend = () => {
-          recognizing = false;
-          updateVoiceButtonState();
-        };
-
-        return recognitionInstance;
-      }
-
-      function startRecognition(recognitionInstance) {
-        if (recognitionInstance && !recognizing) {
-          recognitionInstance.start();
-          recognizing = true;
-          updateVoiceButtonState();
+      let provider;
+      if (window.ethereum) {
+        try {
+          provider = new ethers.BrowserProvider(window.ethereum);
+        } catch (err) {
+          console.warn('Error creating provider from ethereum:', err);
         }
       }
 
-      function stopRecognition() {
-        if (recognition) {
-          recognition.stop();
-          recognizing = false;
-          updateVoiceButtonState();
+      async function fetchGasPrice() {
+        try {
+          if (provider) {
+            const gasPriceBigInt = await provider.getGasPrice();
+            const gasPriceGwei = Number(
+              ethers.formatUnits(gasPriceBigInt, 'gwei')
+            ).toFixed(1);
+            gasPriceEl.textContent = gasPriceGwei;
+          } else {
+            // Fallback to public API
+            const res = await fetch(
+              'https://ethgasstation.info/api/ethgasAPI.json?api-key=demo'
+            );
+            if (!res.ok) throw new Error('API fetch failed');
+            const data = await res.json();
+            const fastGwei = (data.fast / 10).toFixed(1);
+            gasPriceEl.textContent = fastGwei;
+          }
+        } catch (err) {
+          console.warn('Failed to fetch gas price:', err);
+          gasPriceEl.textContent = 'N/A';
         }
       }
 
-      function toggleRecognition() {
-        if (!recognition) {
-          recognition = setupRecognition(transcript => {
-            queryInput.value = transcript;
-            queryInput.focus();
-          });
-          if (!recognition) return;
-        }
-        if (recognizing) {
-          stopRecognition();
-        } else {
-          startRecognition(recognition);
-        }
-      }
-
-      function updateVoiceButtonState() {
-        if (recognizing) {
-          voiceToggle.classList.add('active');
-          voiceToggle.setAttribute('aria-pressed', 'true');
-          voiceToggle.title = "Click to stop voice input";
-        } else {
-          voiceToggle.classList.remove('active');
-          voiceToggle.setAttribute('aria-pressed', 'false');
-          voiceToggle.title = "Click to start voice input";
-        }
-      }
-
-      voiceToggle.addEventListener('click', toggleRecognition);
-
-      // Chat area functionality
-      const chatRecognition = setupRecognition(transcript => {
-        chatInput.value = transcript;
-        chatInput.focus();
-      });
-
-      let chatRecognizing = false;
-
-      function updateChatVoiceButtonState() {
-        if (chatRecognizing) {
-          chatVoiceToggle.classList.add('active');
-          chatVoiceToggle.setAttribute('aria-pressed', 'true');
-          chatVoiceToggle.title = "Click to stop voice input";
-        } else {
-          chatVoiceToggle.classList.remove('active');
-          chatVoiceToggle.setAttribute('aria-pressed', 'false');
-          chatVoiceToggle.title = "Click to start voice input";
-        }
-      }
-
-      function startChatRecognition() {
-        if (chatRecognition && !chatRecognizing) {
-          chatRecognition.start();
-          chatRecognizing = true;
-          updateChatVoiceButtonState();
-        }
-      }
-
-      function stopChatRecognition() {
-        if (chatRecognition) {
-          chatRecognition.stop();
-          chatRecognizing = false;
-          updateChatVoiceButtonState();
-        }
-      }
-
-      function toggleChatRecognition() {
-        if (!chatRecognition) {
-          alert('Speech recognition not supported in this browser.');
-          return;
-        }
-        if (chatRecognizing) {
-          stopChatRecognition();
-        } else {
-          startChatRecognition();
-        }
-      }
-
-      chatVoiceToggle.addEventListener('click', toggleChatRecognition);
-
-      // Send chat message handler
-      function appendChatMessage(text, sender) {
-        const msg = document.createElement('div');
-        msg.classList.add('message', sender);
-        msg.textContent = text;
-        chatMessages.appendChild(msg);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      }
-
-      chatSend.addEventListener('click', () => {
-        const text = chatInput.value.trim();
-        if (!text) return;
-        appendChatMessage(text, 'user');
-        chatInput.value = '';
-        // Simulate bot response (replace with your API call)
-        setTimeout(() => {
-          appendChatMessage(`Bot echoes: ${text}`, 'bot');
-        }, 800);
-      });
-
-      // Enter key sends chat message
-      chatInput.addEventListener('keydown', e => {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          chatSend.click();
-        }
-      });
-
+      fetchGasPrice();
+      setInterval(fetchGasPrice, 15000);
     })();
   </script>
 </body>
