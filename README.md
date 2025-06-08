@@ -14,6 +14,11 @@ KubuVerse unites the best of AI, blockchain, and multi-language development into
 - **Open Source & Community Driven:** Collaborate, contribute, and innovate alongside a growing ecosystem.
 
 ---
+![Build](https://img.shields.io/github/actions/workflow/status/Web4application/kubuverse/ci-cd.yaml?branch=main&label=build)
+![Docker](https://img.shields.io/badge/docker-ready-blue)
+![License](https://img.shields.io/github/license/Web4application/kubuverse)
+![Version](https://img.shields.io/github/v/tag/Web4application/kubuverse)
+![Architecture](https://img.shields.io/badge/arch-multi--arch-brightgreen)
 
 
 # 🌐 Kubuverse
@@ -23,6 +28,32 @@ KubuVerse unites the best of AI, blockchain, and multi-language development into
 > “Where ideas scale and compute becomes culture.”
 
 ---
+## 📸 System Diagram
+
+Here's an overview of the Kubuverse architecture:
+
+![Kubuverse Architecture](./docs/kubuverse-arch.png)
+
+---
+
+## 🏗 Tech Breakdown
+
+- **Backend**: FastAPI (async Python)
+- **Database**: PostgreSQL
+- **Cache/Queue**: Redis (optional)
+- **Containerization**: Docker + GHCR
+- **CI/CD**: GitHub Actions
+- **Signing**: Cosign
+- **Deployment**: Kubernetes-native
+
+---
+
+## 📦 GHCR Image
+
+docker pull    
+
+    ghcr.io/web4application/kubuverse:latest
+
 
 ## 🚀 Features
 
