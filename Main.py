@@ -1,4 +1,5 @@
-from fastapi import FastAPI, HTTPException, BackgroundTasks
+from fastapi import FastAPI, HTTPException, BackgroundTasks, Request
+from i18n import detect_language, get_translator
 from pydantic import BaseModel
 from typing import Optional
 import subprocess
@@ -86,3 +87,13 @@ async def upgrade_endpoint(repo: RepoRequest):
         return {"upgrades": upgrade_suggestions}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/advanced")
+async def advanced_page(request: Request):
+    lang = detect_language(request)
+    translator = get_translator(lang)
+    _ = translator.gettext
+    return {
+        "language": lang,
+        "message": _(f"Welcome to the advanced Kubuverse page!")
+    }
