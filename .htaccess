@@ -1,0 +1,4 @@
+Options +MultiViews
+AddLanguage en .en
+AddLanguage fr .fr.utf8
+DefaultLanguage en
