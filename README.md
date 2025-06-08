@@ -1,3 +1,7 @@
+![Kubuverse Architecture](kubuverse-arch.png)
+
+
+
 # KubuVerse
 
 ## The AI-powered Multi-language Blockchain Webapp Dev Environment
@@ -158,3 +162,5 @@ MIT License © Web4Application
 
 Kubuverse is not just an app — it's an **AI-native compute culture**.
 It’s what happens when DevOps, data, and distributed systems come together under one sovereign deployment.
+
+![Kubuverse Architecture](kubuverse-arch.png)
