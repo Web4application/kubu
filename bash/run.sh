@@ -9,8 +9,7 @@ git add .
 git commit -m "Add audit script, CI/CD workflow, and FastAPI backend scaffold"
 git push origin main
 cd kubu/scripts
-python3 audit_repo.py
-
+python3 audit_repo.p
 docker pull ghcr.io/web4application/kubu:main
 docker pull ghcr.io/web4application/kubu@sha256:<digest>
 echo $CR_PAT | docker login ghcr.io -u USERNAME --password-stdin
@@ -21,3 +20,4 @@ cosign generate-key-pair
 # Sign image
 cosign sign --key cosign.key ghcr.io/web4application/kubu:main
 cosign verify --key cosign.pub ghcr.io/web4application/kubu:main
+pip install fastapi uvicorn sqlalchemy psycopg2-binary
