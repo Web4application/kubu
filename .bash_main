@@ -1,6 +1,12 @@
-pip install fastapi uvicorn sqlalchemy psycopg2-binary
-sudo apt install libxml2-utils
-sudo nano /etc/xml/catalog
-git clone https://github.com/Web4application/kubuverse.git
-cd kubuverse
-docker-compose up --build
+# ~/.bash_main
+
+# Custom Aliases
+alias gs='git status'
+alias ll='ls -lah'
+
+# Environment Variables
+export KUBUVERSE_ENV=production
+export PATH="$HOME/.local/bin:$PATH"
+
+# Load project-specific tools
+source ~/projects/kubuverse/env.sh
