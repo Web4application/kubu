@@ -19,7 +19,7 @@ services:
     depends_on:
       - db
     environment:
-      DATABASE_URL: postgresql://username:password@db:5432/kubu-hai
+      DATABASE_URL: postgresql://username:password@db:5432/kubuverse
     ports:
       - "8000:8000"
     volumes:
@@ -35,9 +35,10 @@ services:
     depends_on:
       - db
     environment:
-      DATABASE_URL: postgresql://username:password@db:5432/kubu-hai
+      DATABASE_URL: postgresql://username:password@db:5432/kubuverse
     entrypoint: ["alembic"]
     command: ["upgrade", "head"]
 
 volumes:
   postgres-data:
+
