@@ -1,3 +1,4 @@
+
 from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool, MetaData
 from alembic import context
@@ -6,6 +7,11 @@ from alembic import context
 from app.models import Base as AppBase
 from user.models import Base as UserBase
 from another.models import Base as AnotherBase
+import os
+config.set_main_option(
+    "sqlalchemy.url",
+    os.getenv("USER_DB_URL", config.get_main_option("sqlalchemy.url"))
+)
 
 # Alembic Config object
 config = context.config
@@ -50,3 +56,4 @@ if context.is_offline_mode():
     run_migrations_offline()
 else:
     run_migrations_online()
+    
