@@ -1,0 +1,62 @@
+spec:
+  inputs:
+    group_id:
+    access_token:
+    stage:
+      default: deploy
+    theme_repo_url:
+      default: ""
+    theme_repo_path:
+      default: ""
+    recent_closure_threshold:
+      default: "0"
+---
+include:
+  - component: gitlab.com/gitlab-sales-continuous-planning/artifacts/success-plan-to-html/success-plan-to-html@3.5.1
+    inputs:
+      group_id: $[[ inputs.group_id ]]
+      access_token: $[[ inputs.access_token ]]
+      version: 3.5.1
+      theme_repo_url: $[[ inputs.theme_repo_url ]]
+      theme_repo_path: $[[ inputs.theme_repo_path ]]
+      recent_closure_threshold: $[[ inputs.recent_closure_threshold ]]
+
+check_pages_visibility:
+  stage: .pre
+  image: alpine:latest
+  script:
+    - apk add --no-cache curl jq
+    - |
+      curl --header "PRIVATE-TOKEN: $[[ inputs.access_token ]]" \
+        "https://gitlab.com/api/v4/projects/$CI_PROJECT_ID" > api_output.json
+      PAGES_ACCESS_LEVEL=$(jq -r '.pages_access_level' api_output.json)    
+    - |
+      echo "$PAGES_ACCESS_LEVEL" > pages_visibility.txt
+      echo "GitLab Pages visibility currently set to $PAGES_ACCESS_LEVEL"
+    - |
+      if [ "$PAGES_ACCESS_LEVEL" != "private" ]; then
+        echo "Error: GitLab Pages visibility is not set to private. Pipeline will fail."
+        echo "Full API output:"
+        jq . api_output.json
+        exit 1
+      fi
+  artifacts:
+    paths:
+      - api_output.json
+      - pages_visibility.txt
+    expire_in: 1 week
+
+pages:
+  stage: $[[ inputs.stage ]]
+  needs:
+    - success-plan-to-html
+  script:
+    - echo "Publish the success plan pages site."
+    - cp -a build/html public
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH
+      when: manual
