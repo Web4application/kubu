@@ -1,8 +1,3 @@
-/*
- * @(#)ConnectedTextTool.java 5.1
- *
- */
-
 package CH.ifa.draw.figures;
 
 import java.awt.*;
