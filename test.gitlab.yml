@@ -1,0 +1,12 @@
+stages:
+  - collect
+  - distill
+  - build
+  - deploy
+
+include:
+  - component: gitlab.com/gitlab-sales-continuous-planning/targets/success-plan-to-gitlab-pages/success-plan-to-gitlab-pages@$CP_TEST_VERSION
+    inputs:
+        group_id: $CP_TEST_GROUP_ID
+        access_token: $CP_TEST_ACCESS_TOKEN
+        stage: build
