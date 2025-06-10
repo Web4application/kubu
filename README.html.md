@@ -1,7 +1,6 @@
 ![Kubuverse Architecture](kubuverse-arch.png)
 
 
-
 # KubuVerse
 
 ## The AI-powered Multi-language Blockchain Webapp Dev Environment
