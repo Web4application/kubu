@@ -8,3 +8,11 @@ npm create vite@latest kubuverse-ui --template react
 cd kubuverse-ui
 npm install
 npm run dev
+# yarn
+yarn
+
+# npm
+npm install
+
+# pnpm
+pnpm install --shamefully-hoist
